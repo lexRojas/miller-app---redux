@@ -1,13 +1,17 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { InputNumber } from "primereact/inputnumber";
 import {Calendar} from "primereact/calendar"
-import Context from "../context/Context";
+
+
+
+
+
 
 function FormBoleta() {
 
-  const {elemento} = useContext(Context)
+//  const {elemento} = useContext(Context)
 
   
 

@@ -1,18 +1,34 @@
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useState, useEffect, useContext } from "react";
-import Context from "../context/Context";
+import { useState, useEffect} from "react";
 import axios from "axios";
+
+import { useDispatch, useSelector } from "react-redux";
+import { myURL, id_sector, id_proyecto, SET_ACTIVIDAD  } from "../context/userSlice";
+
+
+
+
 
 import React from "react";
 
 function TableElementos() {
   const [datos, setdatos] = useState(null);
-  const { baseURL, id_sector, id_proyecto } = useContext(Context);
+  
+  
+  const baseURL = useSelector(myURL)
+  const id_sector_ = useSelector(id_sector)
+  const id_proyecto_ = useSelector(id_proyecto)
+
+  const dispatch = useDispatch()
+
+
+
+
   const [selectedElemento, setSelectedElemento] = useState(null);
   const [expandedRows, setExpandedRows] = useState(null);
   const [actividades, setActividades] = useState(null);
-  const [elemento, setelemento] = useState(null);
+  //const [elemento, setelemento] = useState(null);
 
   const get_elementos = async (presupuesto = "", sector = "") => {
     await axios
@@ -52,9 +68,9 @@ function TableElementos() {
   };
 
   useEffect(() => {
-    get_elementos(id_proyecto, id_sector);
+    get_elementos(id_proyecto_, id_sector_);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id_sector]);
+  }, [id_sector_]);
 
   const expandirFila = (e) => {
     setExpandedRows(e.data);
@@ -62,7 +78,8 @@ function TableElementos() {
 
   const onRowExpand = (event) => {
     get_actividades(event.data.presupuesto, event.data.cod_ele_sec);
-    setelemento(event.data.cod_ele_sec);
+    //setelemento(event.data.cod_ele_sec);
+    dispatch(SET_ACTIVIDAD(event.data.cod_ele_sec))
   };
 
   const rowExpansionTemplate = (data) => {

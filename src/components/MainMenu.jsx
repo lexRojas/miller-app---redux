@@ -1,15 +1,57 @@
-import React, { useRef, useContext } from "react";
+import miller from "../assets/miller.png";
+
+import React, { useRef } from "react";
 import { Button } from "primereact/button";
 import { TieredMenu } from "primereact/tieredmenu";
 import { useNavigate } from "react-router-dom";
-import Context from "../context/Context";
 
-import miller from "../assets/miller.png";
+import {useEffect} from 'react'
+import { obtenerDatos } from "../db/dbController";
+
+import { id_proyecto,desc_proyecto, SET_ID_PROYECTO} from '../context/userSlice'
+import { useDispatch, useSelector } from 'react-redux';
+
+
+
 
 export default function MainMenu() {
   const menu = useRef(null);
   const navegate = useNavigate();
-  const { desc_proyecto, id_proyecto } = useContext(Context);
+  const descripcion = useSelector(desc_proyecto)
+  const id  = useSelector(id_proyecto)
+
+
+  
+  const dispacth = useDispatch()
+
+
+  const obtenerInfo = async () => {
+
+    try {
+      const id_proyecto = await obtenerDatos(1);
+      const desc_proyecto = await obtenerDatos(2);
+    
+      console.log(id_proyecto)
+      console.log(desc_proyecto)
+  
+      dispacth(SET_ID_PROYECTO({id:id_proyecto, descripcion:desc_proyecto}))
+        
+    } catch (error) {
+      
+    }
+    
+
+
+
+  }
+
+
+  useEffect(() => {
+    
+    console.log('OBTENIENDO DATOS APP...')
+    obtenerInfo();  
+ 
+  }, [])
 
   const items = [
     {
@@ -98,6 +140,7 @@ export default function MainMenu() {
 
   return (
     <div className="flex menu-barra">
+      
       <div className="col-fixed menu-botton">
         <TieredMenu model={items} popup ref={menu} breakpoint="767px" />
         <Button
@@ -111,9 +154,9 @@ export default function MainMenu() {
           <img className="" src={miller} alt="M" width={35} height={35} />
           <label className="menu-titulo px-2"> Miller Constructora 2023</label>
         </div>
-        {id_proyecto !== ""?( <>
-          <p className="menu-subtitulo"> {desc_proyecto} </p>
-          <p className="menu-subtitulo"> {id_proyecto} </p>
+        {id !== ""?( <>
+          <p className="menu-subtitulo"> {descripcion} </p>
+          <p className="menu-subtitulo"> {id} </p>
           </>
         ):( 
           <p className="menu-error"> No existe proyecto ! </p>

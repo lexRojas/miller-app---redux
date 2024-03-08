@@ -1,20 +1,27 @@
 import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
-import Context from "../context/Context";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { setIdUser } from "../context/userSlice";
+
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 import { Divider } from "primereact/divider";
 
+
 export default function Login() {
   const [value, setValue] = useState("");
-  const {set_usuario} = useContext(Context);
+  
+  
+  const dispatch = useDispatch();
+
+
   const navegate = useNavigate();
 
 
   function clickHandleIngresar(e) {
     e.preventDefault();
-    set_usuario("valido");
+    dispatch(setIdUser('Valido'))
     navegate("/app");
   }
 

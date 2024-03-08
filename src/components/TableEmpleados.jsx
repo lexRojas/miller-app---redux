@@ -1,20 +1,28 @@
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useState, useEffect, useContext } from "react";
-import Context from "../context/Context";
+import { useState, useEffect } from "react";
+
 import axios from "axios";
+
+import { myURL, id_proyecto } from "../context/userSlice";
 
 
 
 import React from "react";
 import { Button } from "primereact/button";
+import { useSelector } from "react-redux";
 
 function TableEmpleados() {
   const [datosEmpleadosDisponibles, setDatosEmpleadosDisponibles] =
     useState(null);
   const [datosEmpleadosAsignados, setDatosEmpleadosAsignados] = useState(null);
 
-  const { baseURL, id_proyecto } = useContext(Context);
+  const baseURL = useSelector(myURL);
+  const id_proyecto_  = useSelector(id_proyecto);
+  console.log('desde table empleados')
+  console.log(id_proyecto_)
+
+
   const [selectedEmpleadoDisponible, setSelectedEmpleadoDisponible] =
     useState(null);
   const [selectedEmpleadoAsignado, setSelectedEmpleadoAsignado] =
@@ -101,9 +109,9 @@ function TableEmpleados() {
   };
 
   useEffect(() => {
-    get_empleados(id_proyecto);
+    get_empleados(id_proyecto_);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id_proyecto]);
+  }, [id_proyecto_]);
 
   return (
     <div className="flex flex-column col-12 md:flex-row">

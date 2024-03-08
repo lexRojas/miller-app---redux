@@ -1,5 +1,0 @@
-export const SET_ID_PROYECTO = 'SET_ID_PROYECTO'
-export const SET_ID_USUARIO = 'SET_ID_USUARIO'
-export const SET_BASEURL = 'SET_BASEURL'
-export const SET_ID_SECTORES = 'SET_ID_SECTORES'
-export const SET_ACTIVIDAD = 'SET_ACTIVIDAD'

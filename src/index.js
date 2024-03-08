@@ -1,18 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-
+import { Provider } from "react-redux";
+import store from './context/store.js'
 import App from "./App";
 
-import UseEstado from "./context/UseEstado";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <React.StrictMode>
     <div className="flex ">
-      <UseEstado>
+      <Provider store = {store}>
         <App/>
-      </UseEstado>
+      </Provider>
     </div>
   </React.StrictMode>
 );

@@ -1,11 +1,24 @@
-import React, { useContext, useEffect } from "react";
-import Context from "../context/Context";
+import React, {  useEffect } from "react";
+
 import axios from "axios";
 import { useState } from "react";
 import { Dropdown } from "primereact/dropdown";
 
+import { SET_ID_SECTORES, id_proyecto, myURL } from "../context/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+
+
 export default function ComboSectores() {
-  const { baseURL, id_proyecto,set_id_sectores } = useContext(Context);
+
+
+
+  const baseURL  = useSelector(myURL)
+  const id_proyecto_  = useSelector(id_proyecto)
+
+  const dispatch = useDispatch()
+  
+  
+  
   const [Sectores, setSectores] = useState([]);
   const [selectedSector, setselectedSector] = useState(null);
 
@@ -13,7 +26,7 @@ export default function ComboSectores() {
   // fijo el sector en el contexto 
   const fijarSectorID = (valor) =>{
     const {codigo_sector} = valor
-    set_id_sectores(codigo_sector)
+    dispatch(SET_ID_SECTORES(codigo_sector))
     setselectedSector(valor)
   }
 
@@ -37,7 +50,7 @@ export default function ComboSectores() {
       });
   };
   useEffect(() => {
-    get_sectores(id_proyecto);
+    get_sectores(id_proyecto_);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

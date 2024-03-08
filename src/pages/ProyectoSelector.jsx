@@ -1,17 +1,27 @@
-import React, { useContext, useEffect, useState,useRef } from "react";
-import Context from "../context/Context";
+import React, { useEffect, useState,useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { Divider } from "primereact/divider";
 import { Button } from "primereact/button";
 import {Messages} from "primereact/messages"
+
+
+import {myURL, SET_ID_PROYECTO} from "../context/userSlice"
+import { useSelector} from "react-redux/es/hooks/useSelector";
+import { useDispatch } from "react-redux";
+
+import { fijarDatos } from "../db/dbController";
+
 import axios from "axios";
 
 
 function ProyectoSelector() {
-  const { baseURL, set_Id_proyecto } =
-    useContext(Context);
+
+  const baseURL = useSelector(myURL)
+  const dispatch = useDispatch()
+
+  
 
   const [filtro, setfiltro] = useState("");
   const navegate = useNavigate();
@@ -37,20 +47,27 @@ function ProyectoSelector() {
       });
   };
 
+  const fijarProyecto = (id,descripcion) =>{
+    dispatch(SET_ID_PROYECTO({id, descripcion}));
+    fijarDatos(1, id, "id_proyecto");
+    fijarDatos(2, descripcion, "desc_proyecto");
+  }
+
 
 
   const handleClickSelectProyect = () => {
     
+    fijarProyecto("","")
 
     if (selectedProyect === null) {
-      set_Id_proyecto("", "");
+      
       msg.current.show([
         { severity: 'error', summary: 'Error', detail: 'Debes seleccionar un proyecto', sticky: false, closable: true }
     ]);
       
     } else {
       const { presupuesto, proyecto } = selectedProyect;
-      set_Id_proyecto(presupuesto, proyecto);
+      fijarProyecto(presupuesto, proyecto);
       navegate("/App");
     }
   };
