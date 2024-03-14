@@ -11,17 +11,24 @@ import { myURL, id_proyecto } from "../context/userSlice";
 import { useSelector } from "react-redux";
 
 function TableEmpleados() {
-  const [datosEmpleadosDisponibles, setDatosEmpleadosDisponibles] =
-    useState(null);
-  const [datosEmpleadosAsignados, setDatosEmpleadosAsignados] = useState(null);
+  const [datosEmpleadosDisponibles, setDatosEmpleadosDisponibles] =  useState([]);
+  const [datosEmpleadosAsignados, setDatosEmpleadosAsignados] = useState([]);
+
+  let selectedEmpleadoDisponible=null;
+  let selectedEmpleadoAsignado=null;
+
+  const setSelectedEmpleadoDisponible=(o)=>{
+    selectedEmpleadoDisponible=o;
+  }
+
+  const setSelectedEmpleadoAsignado=(o)=>{
+    selectedEmpleadoAsignado=o;
+  }
 
   const baseURL = useSelector(myURL);
   const id_proyecto_ = useSelector(id_proyecto);
 
-  const [selectedEmpleadoDisponible, setSelectedEmpleadoDisponible] =
-    useState(null);
-  const [selectedEmpleadoAsignado, setSelectedEmpleadoAsignado] =
-    useState(null);
+  
 
   const toastRef = useRef(null);
 
@@ -53,13 +60,13 @@ function TableEmpleados() {
   };
 
   const handleClickAsignar = () => {
-    let nuevoEmpleadosDisponibles = datosEmpleadosDisponibles;
+
+    let nuevoEmpleadosDisponibles=datosEmpleadosDisponibles
 
     if (selectedEmpleadoDisponible) {
       // si la lista de empleados asignados ya tiene empleados
       if (datosEmpleadosAsignados) {
-        let array_asignados = datosEmpleadosAsignados;
-        array_asignados = [...array_asignados, ...selectedEmpleadoDisponible];
+        let array_asignados = [...datosEmpleadosAsignados, ...selectedEmpleadoDisponible];
         setDatosEmpleadosAsignados(array_asignados);
       } else {
         //si la lista de empleados asignados esta vacia
@@ -67,10 +74,13 @@ function TableEmpleados() {
       }
 
       // elimino de la lista de disponibles los empleados asignados
+
+ 
+
       selectedEmpleadoDisponible.forEach((element) => {
-        nuevoEmpleadosDisponibles = nuevoEmpleadosDisponibles.filter(
-          (item) => item.codigo_empleado !== element.codigo_empleado
-        );
+         nuevoEmpleadosDisponibles = nuevoEmpleadosDisponibles.filter(
+           (item) => item.codigo_empleado !== element.codigo_empleado
+         );
 
         setDatosEmpleadosDisponibles(nuevoEmpleadosDisponibles);
       });

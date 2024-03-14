@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { InputNumber } from "primereact/inputnumber";
@@ -23,6 +23,9 @@ function FormBoleta() {
   const [hora_inicio, setHora_Inicio] = useState("")
   const [hora_final, setHora_Final] = useState("17:00")
 
+  const ubicacion_ref  = useRef(null)
+
+
   const actividad_ = useSelector(actividad)
 
   useEffect(() => {
@@ -30,6 +33,9 @@ function FormBoleta() {
     setDescripcion(actividad_.actividad)
     setUM(actividad_.unidad_medida)
     setMedida(actividad_.cantidad)
+
+
+    ubicacion_ref.current.focus()
     
   }, [actividad_])
 
@@ -42,6 +48,7 @@ function FormBoleta() {
           id="panos"
           aria-describedby="planos-help"
           value={ubicación}
+          ref={ubicacion_ref}
           onChange={(e) => setUbicacionPlanos(e.target.value)}
         />
         <small id="planos-help">
