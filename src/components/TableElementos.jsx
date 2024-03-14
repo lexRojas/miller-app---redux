@@ -1,5 +1,5 @@
 import { DataTable } from "primereact/datatable";
-import {ProgressSpinner} from 'primereact/progressspinner'
+import { ProgressSpinner } from "primereact/progressspinner";
 import { Column } from "primereact/column";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -13,17 +13,15 @@ import {
 } from "../context/userSlice";
 
 import React from "react";
+import { Button } from "primereact/button";
 
 function TableElementos() {
-
-  //Variables de estado locales 
+  //Variables de estado locales
   const [datos, setdatos] = useState(null);
 
-  const [Loading, setLoading] = useState(true)
+  const [Loading, setLoading] = useState(true);
 
-
-
-  //Variables del contexto 
+  //Variables del contexto
   const baseURL = useSelector(myURL);
   const id_sector_ = useSelector(id_sector);
   const id_proyecto_ = useSelector(id_proyecto);
@@ -32,7 +30,6 @@ function TableElementos() {
 
   const [selectedElemento, setSelectedElemento] = useState(null);
   const [expandedRows, setExpandedRows] = useState(null);
-
 
   const fijoElemento = (valor) => {
     setSelectedElemento(valor);
@@ -43,39 +40,45 @@ function TableElementos() {
   };
 
   useEffect(() => {
-    
-    setLoading(true)
+    setLoading(true);
 
     const get_elem_detail = async (presupuesto = "", sector = "") => {
       await axios
         .get(`${baseURL}/elem_detail`, { params: { presupuesto, sector } })
         .then((response) => {
-          setdatos(response.data)
-          setLoading(false)
+          setdatos(response.data);
+          setLoading(false);
         })
         .catch((error) => {
           console.log("No se encontraron elementos en este caso... ");
-          setdatos([])
+          setdatos([]);
+          setLoading(true);
         });
     };
 
-    get_elem_detail(id_proyecto_,id_sector_)
-
-    
+    get_elem_detail(id_proyecto_, id_sector_);
   }, [baseURL, id_proyecto_, id_sector_]);
 
   const expandirFila = (e) => {
     setExpandedRows(e.data);
   };
 
-  const onRowExpand = (event) => {
-    // get_actividades(event.data.presupuesto, event.data.cod_ele_sec);
-    //setelemento(event.data.cod_ele_sec);
-    dispatch(SET_ACTIVIDAD(event.data.cod_ele_sec));
+  const templateButton = (data) => {
+    return (
+      <Button
+        icon="pi pi-arrow-right"
+        onClick={() => handleClick(data)}
+      ></Button>
+    );
+  };
+
+  const handleClick = (datos) => {
+    dispatch(SET_ACTIVIDAD(datos));
+    console.log("valor btn");
+    console.log(datos);
   };
 
   const rowExpansionTemplate = (data) => {
-    
     return (
       <div className="p-3">
         <h5>Elemento presupuestario - {data.comentario}</h5>
@@ -84,29 +87,37 @@ function TableElementos() {
           <Column field="actividad" header="Actividad" sortable></Column>
           <Column field="unidad_medida" header="Und.Med" sortable></Column>
           <Column field="cantidad" header="Cantidad" sortable></Column>
+          <Column
+            header="Procesar"
+            body={(rowData) => (templateButton(rowData) )}
+          >
+            {" "}
+          </Column>
         </DataTable>
       </div>
     );
-    
   };
 
   return (
-    <div className="card col">  
-
-    {Loading ?
-        (<div className="block font-bold text-xl text-center p-4 mb-3">
-        <p> Estamos recuperando la lista de elementos y sus actividades </p>
-        <p> Por favor espere un momento...</p>
-        <ProgressSpinner style={{width: '50px', height: '50px'}} strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s" /> 
-        </div>)
-        :
-        (
+    <div className="card col">
+      {Loading ? (
+        <div className="block font-bold text-xl text-center p-4 mb-3">
+          <p> Estamos recuperando la lista de elementos y sus actividades </p>
+          <p> Por favor espere un momento...</p>
+          <ProgressSpinner
+            style={{ width: "50px", height: "50px" }}
+            strokeWidth="8"
+            fill="var(--surface-ground)"
+            animationDuration=".5s"
+          />
+        </div>
+      ) : (
         <DataTable
           value={datos}
           expandedRows={expandedRows}
           onRowToggle={(e) => expandirFila(e)}
           rowExpansionTemplate={rowExpansionTemplate}
-          onRowExpand={onRowExpand}
+          // onRowExpand={onRowExpand}
           size="small"
           stripedRows
           tableStyle={{ minWidth: "10rem", Width: "20rem" }}
@@ -129,7 +140,7 @@ function TableElementos() {
           <Column field="unidad_medida" header="Und.Med"></Column>
           <Column field="cantidad_elemento" header="Cantidad"></Column>
         </DataTable>
-       )}
+      )}
     </div>
   );
 }

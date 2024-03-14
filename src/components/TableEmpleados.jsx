@@ -1,15 +1,13 @@
+import React from "react";
+import { useState, useEffect, useRef } from "react";
+
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useState, useEffect } from "react";
+import { Button } from "primereact/button";
+import { Toast } from "primereact/toast";
 
 import axios from "axios";
-
 import { myURL, id_proyecto } from "../context/userSlice";
-
-
-
-import React from "react";
-import { Button } from "primereact/button";
 import { useSelector } from "react-redux";
 
 function TableEmpleados() {
@@ -18,13 +16,14 @@ function TableEmpleados() {
   const [datosEmpleadosAsignados, setDatosEmpleadosAsignados] = useState(null);
 
   const baseURL = useSelector(myURL);
-  const id_proyecto_  = useSelector(id_proyecto);
- 
+  const id_proyecto_ = useSelector(id_proyecto);
 
   const [selectedEmpleadoDisponible, setSelectedEmpleadoDisponible] =
     useState(null);
   const [selectedEmpleadoAsignado, setSelectedEmpleadoAsignado] =
     useState(null);
+
+  const toastRef = useRef(null);
 
   const get_empleados = async (presupuesto = 0) => {
     await axios
@@ -37,73 +36,84 @@ function TableEmpleados() {
         setDatosEmpleadosDisponibles(result);
         console.log("Error en Fetch Get elementos");
         console.log(error);
-        
-
       });
   };
 
   const fijoEmpleadoDisponible = (valor) => {
+    console.log("empleado disponible");
+    console.log(valor);
     setSelectedEmpleadoDisponible(valor);
   };
 
   const fijoEmpleadoAsignado = (valor) => {
-    //setSelectedEmpleado(valor);
+    console.log("empleado asignado");
+    console.log(valor);
 
     setSelectedEmpleadoAsignado(valor);
   };
 
   const handleClickAsignar = () => {
-    let nuevoEmpleadosDisponibles =datosEmpleadosDisponibles
+    let nuevoEmpleadosDisponibles = datosEmpleadosDisponibles;
 
-    // si la lista de empleados asignados ya tiene empleados
-    if (datosEmpleadosAsignados) {
-      let array_asignados = datosEmpleadosAsignados;
-      array_asignados = [...array_asignados, ...selectedEmpleadoDisponible];
-      setDatosEmpleadosAsignados(array_asignados);      
-    } else { //si la lista de empleados asignados esta vacia 
-      setDatosEmpleadosAsignados(selectedEmpleadoDisponible);
+    if (selectedEmpleadoDisponible) {
+      // si la lista de empleados asignados ya tiene empleados
+      if (datosEmpleadosAsignados) {
+        let array_asignados = datosEmpleadosAsignados;
+        array_asignados = [...array_asignados, ...selectedEmpleadoDisponible];
+        setDatosEmpleadosAsignados(array_asignados);
+      } else {
+        //si la lista de empleados asignados esta vacia
+        setDatosEmpleadosAsignados(selectedEmpleadoDisponible);
+      }
+
+      // elimino de la lista de disponibles los empleados asignados
+      selectedEmpleadoDisponible.forEach((element) => {
+        nuevoEmpleadosDisponibles = nuevoEmpleadosDisponibles.filter(
+          (item) => item.codigo_empleado !== element.codigo_empleado
+        );
+
+        setDatosEmpleadosDisponibles(nuevoEmpleadosDisponibles);
+      });
+    } else {
+      toastRef.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "No ha seleccionado un empleado disponible de la lista",
+        life: 3000,
+      });
     }
-
-    // elimino de la lista de disponibles los empleados asignados
-    selectedEmpleadoDisponible.forEach((element) => {
-
-      nuevoEmpleadosDisponibles = nuevoEmpleadosDisponibles.filter(
-        (item) => item.codigo_empleado !== element.codigo_empleado
-      )
-
-      setDatosEmpleadosDisponibles(nuevoEmpleadosDisponibles);
-    });
-
-
   };
 
   const handleClickDevolver = () => {
+    let nuevoEmpleadosAsignados = datosEmpleadosAsignados;
 
-    let nuevoEmpleadosAsignados =datosEmpleadosAsignados
+    if (selectedEmpleadoAsignado) {
+      // si la lista de empleados disponibles ya tiene empleados
+      if (datosEmpleadosDisponibles) {
+        let array_disponibles = datosEmpleadosDisponibles;
+        array_disponibles = [...array_disponibles, ...selectedEmpleadoAsignado];
+        setDatosEmpleadosDisponibles(array_disponibles);
+      } else {
+        //si la lista de empleados asignados esta vacia
+        setDatosEmpleadosDisponibles(selectedEmpleadoAsignado);
+      }
 
-    // si la lista de empleados disponibles ya tiene empleados
-    if (datosEmpleadosDisponibles) {
-      let array_disponibles = datosEmpleadosDisponibles;
-      array_disponibles = [...array_disponibles, ...selectedEmpleadoAsignado];
-      setDatosEmpleadosDisponibles(array_disponibles);      
-    } else { //si la lista de empleados asignados esta vacia 
-      setDatosEmpleadosDisponibles(selectedEmpleadoAsignado);
+      // elimino de la lista de asignados los empleados disponibles
+      selectedEmpleadoAsignado.forEach((element) => {
+        nuevoEmpleadosAsignados = nuevoEmpleadosAsignados.filter(
+          (item) => item.codigo_empleado !== element.codigo_empleado
+        );
+
+        setDatosEmpleadosAsignados(nuevoEmpleadosAsignados);
+      });
+    } else {
+      toastRef.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "No ha seleccionado un empleado asignado de la lista",
+        life: 3000,
+      });
     }
-
-    // elimino de la lista de asignados los empleados disponibles
-    selectedEmpleadoAsignado.forEach((element) => {
-
-      nuevoEmpleadosAsignados = nuevoEmpleadosAsignados.filter(
-        (item) => item.codigo_empleado !== element.codigo_empleado
-      )
-
-      setDatosEmpleadosAsignados(nuevoEmpleadosAsignados);
-    });
-
-
-
-
-
   };
 
   useEffect(() => {
@@ -191,6 +201,7 @@ function TableEmpleados() {
           <Button className="w-8rem" icon="" label="Cancelar" />
         </div>
       </div>
+      <Toast ref={toastRef} />
     </div>
   );
 }

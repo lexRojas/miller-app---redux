@@ -8,7 +8,17 @@ const procesarInitialState = () => {
     usuario: "",
     xURL: "https://psql-backend-a5691387ba13.herokuapp.com",
     id_sector: "",
-    actividad: [],
+    actividad: [
+      {
+        "presupuesto": "",
+        "codigo_manobra": 0,
+        "actividad": "",
+        "unidad_medida": "",
+        "cantidad": 0,
+        "rendimiento": 0
+      }
+    ]
+
   };
 
   return state;

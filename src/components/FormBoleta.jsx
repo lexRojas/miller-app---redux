@@ -1,9 +1,11 @@
-import React, { useState, } from "react";
+import React, { useState, useEffect } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { InputNumber } from "primereact/inputnumber";
-import {Calendar} from "primereact/calendar"
+import { Calendar} from "primereact/calendar"
 
+import { actividad } from "../context/userSlice";
+import { useSelector } from "react-redux/es/hooks/useSelector";
 
 
 
@@ -14,22 +16,22 @@ function FormBoleta() {
 //  const {elemento} = useContext(Context)
 
   
-
+  const [ubicación, setUbicacionPlanos] = useState("");
   const [descripcion, setDescripcion] = useState("");
-  const [value, setValue] = useState("");
   const [medida, setMedida] = useState(0);
   const [um, setUM] = useState("");
   const [hora_inicio, setHora_Inicio] = useState("")
   const [hora_final, setHora_Final] = useState("17:00")
 
-  // useEffect(() => {
+  const actividad_ = useSelector(actividad)
 
-  //   const {unidad_medida} = elemento
-  //   setUM(unidad_medida)
-  
-  // }, [elemento])
-  
+  useEffect(() => {
 
+    setDescripcion(actividad_.actividad)
+    setUM(actividad_.unidad_medida)
+    setMedida(actividad_.cantidad)
+    
+  }, [actividad_])
 
 
   return (
@@ -39,8 +41,8 @@ function FormBoleta() {
         <InputText
           id="panos"
           aria-describedby="planos-help"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
+          value={ubicación}
+          onChange={(e) => setUbicacionPlanos(e.target.value)}
         />
         <small id="planos-help">
           Indique la sección del plano donde se realizará la actividad.
