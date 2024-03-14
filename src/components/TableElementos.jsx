@@ -49,6 +49,7 @@ function TableElementos() {
         .get(`${baseURL}/elem_detail`, { params: { presupuesto, sector } })
         .then((response) => {
           setdatos(response.data)
+          setLoading(false)
         })
         .catch((error) => {
           console.log("No se encontraron elementos en este caso... ");
