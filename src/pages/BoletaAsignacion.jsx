@@ -5,6 +5,8 @@ import FormBoleta from "../components/FormBoleta";
 import TableEmpleados from "../components/TableEmpleados";
 
 function BoletaAsignacion() {
+
+
   return (
     <div className="card flex flex-column col-12 p-3 md:col-10 mt-2">
       <div className="flex flex-column md:flex-row">

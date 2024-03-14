@@ -7,6 +7,14 @@ import axios from "axios";
 import React from "react";
 
 function TableActividades() {
+
+
+
+
+
+
+
+
   const [datos, setdatos] = useState(null);
   const { baseURL, id_proyecto,elemento, set_actividad} = useContext(Context);
   const [selectedRow, setSelectedRow] = useState(null);

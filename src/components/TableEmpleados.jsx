@@ -19,9 +19,7 @@ function TableEmpleados() {
 
   const baseURL = useSelector(myURL);
   const id_proyecto_  = useSelector(id_proyecto);
-  console.log('desde table empleados')
-  console.log(id_proyecto_)
-
+ 
 
   const [selectedEmpleadoDisponible, setSelectedEmpleadoDisponible] =
     useState(null);
