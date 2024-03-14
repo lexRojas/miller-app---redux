@@ -43,6 +43,8 @@ function TableElementos() {
   };
 
   useEffect(() => {
+    
+    setLoading(true)
 
     const get_elem_detail = async (presupuesto = "", sector = "") => {
       await axios
