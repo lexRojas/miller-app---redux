@@ -7,43 +7,65 @@ import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 
 import axios from "axios";
-import { myURL, id_proyecto } from "../context/userSlice";
+
 import { useSelector } from "react-redux";
 
 function TableEmpleados() {
-  const [datosEmpleadosDisponibles, setDatosEmpleadosDisponibles] =  useState([]);
+  const [datosEmpleadosDisponibles, setDatosEmpleadosDisponibles] = useState(
+    []
+  );
   const [datosEmpleadosAsignados, setDatosEmpleadosAsignados] = useState([]);
 
-  let selectedEmpleadoDisponible=null;
-  let selectedEmpleadoAsignado=null;
+  let selectedEmpleadoDisponible = null;
+  let selectedEmpleadoAsignado = null;
 
-  const setSelectedEmpleadoDisponible=(o)=>{
-    selectedEmpleadoDisponible=o;
-  }
+  const setSelectedEmpleadoDisponible = (o) => {
+    selectedEmpleadoDisponible = o;
+  };
 
-  const setSelectedEmpleadoAsignado=(o)=>{
-    selectedEmpleadoAsignado=o;
-  }
+  const setSelectedEmpleadoAsignado = (o) => {
+    selectedEmpleadoAsignado = o;
+  };
 
-  const baseURL = useSelector(myURL);
-  const id_proyecto_ = useSelector(id_proyecto);
+  const baseURL = useSelector(state => state.user.myURL);
+  const id_proyecto_ = useSelector(state => state.user.id_proyecto);
 
-  
+
+  const fecha_inicio_ = useSelector(state => state.boleta.fecha_inicio)
+  const proyecto_= useSelector(state => state.boleta.proyecto)
+  const ubicacion_= useSelector(state => state.boleta.ubicacion)
+  const comentarios_= useSelector(state => state.boleta.comentarios)
+  const cantidad_medida_= useSelector(state => state.boleta.cantidad_medida)
+  const unidad_medida_= useSelector(state => state.boleta.unidad_medida)
+  const hora_inicio_= useSelector(state => state.boleta.hora_inicio)
+  const hora_final_= useSelector(state => state.boleta.hora_final)
+  const cerrada_= useSelector(state => state.boleta.cerrada)
+  const codigo_manobra_= useSelector(state => state.boleta.codigo_manobra)
+  const fecha_final_= useSelector(state => state.boleta.fecha_final)
+
+
+
+ // const _empleados_asignados= useSelector(empleados_asignados)
+
+
+ // const dispatch = useDispatch()
 
   const toastRef = useRef(null);
 
   const get_empleados = async (presupuesto = 0) => {
-    await axios
-      .get(`${baseURL}/empleados`, { params: { presupuesto } })
-      .then(function (response) {
-        setDatosEmpleadosDisponibles(response.data);
-      })
-      .catch(function (error) {
-        let result = [];
-        setDatosEmpleadosDisponibles(result);
-        console.log("Error en Fetch Get elementos");
-        console.log(error);
-      });
+    if (presupuesto) {
+      await axios
+        .get(`${baseURL}/empleados`, { params: { presupuesto } })
+        .then(function (response) {
+          setDatosEmpleadosDisponibles(response.data);
+        })
+        .catch(function (error) {
+          let result = [];
+          setDatosEmpleadosDisponibles(result);
+          console.log("Error en Fetch Get elementos");
+          console.log(error);
+        });
+    }
   };
 
   const fijoEmpleadoDisponible = (valor) => {
@@ -60,13 +82,15 @@ function TableEmpleados() {
   };
 
   const handleClickAsignar = () => {
-
-    let nuevoEmpleadosDisponibles=datosEmpleadosDisponibles
+    let nuevoEmpleadosDisponibles = datosEmpleadosDisponibles;
 
     if (selectedEmpleadoDisponible) {
       // si la lista de empleados asignados ya tiene empleados
       if (datosEmpleadosAsignados) {
-        let array_asignados = [...datosEmpleadosAsignados, ...selectedEmpleadoDisponible];
+        let array_asignados = [
+          ...datosEmpleadosAsignados,
+          ...selectedEmpleadoDisponible,
+        ];
         setDatosEmpleadosAsignados(array_asignados);
       } else {
         //si la lista de empleados asignados esta vacia
@@ -75,12 +99,10 @@ function TableEmpleados() {
 
       // elimino de la lista de disponibles los empleados asignados
 
- 
-
       selectedEmpleadoDisponible.forEach((element) => {
-         nuevoEmpleadosDisponibles = nuevoEmpleadosDisponibles.filter(
-           (item) => item.codigo_empleado !== element.codigo_empleado
-         );
+        nuevoEmpleadosDisponibles = nuevoEmpleadosDisponibles.filter(
+          (item) => item.codigo_empleado !== element.codigo_empleado
+        );
 
         setDatosEmpleadosDisponibles(nuevoEmpleadosDisponibles);
       });
@@ -131,9 +153,53 @@ function TableEmpleados() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id_proyecto_]);
 
+  const handleClickBoleta = () => {
+    const postData = {
+      'fecha_inicio' : fecha_inicio_,
+      'proyecto'  : proyecto_,
+      'ubicacion'  : ubicacion_,
+      'comentarios'  : comentarios_,
+      'cantidad_medida' : cantidad_medida_,
+      'unidad_medida': unidad_medida_,
+      'hora_inicio': hora_inicio_,
+      'hora_final': hora_final_,
+      'cerrada': cerrada_,
+      'codigo_manobra': codigo_manobra_,
+      'fecha_final': fecha_final_,
+      'empleados_asignados':  datosEmpleadosAsignados,
+    };
+
+    console.log('JSON')
+    console.log(JSON.stringify(postData))
+
+
+    const jsonData = JSON.stringify(postData)
+
+
+    // Define the URL where you want to send the POST request
+    const url = baseURL+'/boleta';
+    // Make the POST request using Axios
+    axios.post(url, jsonData)
+      .then(function (response) {
+        // Handle success response
+        console.log('Response:', response.data);
+      })
+      .catch(function (error) {
+        // Handle error
+        console.error('Error:', error);
+      });
+  };
+
   return (
     <div className="flex flex-column col-12 md:flex-row">
       <div className="card flex flex-column col-auto md:col-4">
+        <div>
+          {" "}
+          <p className="font-bold text-xl text-primary ">
+            {" "}
+            Empleados disponibles{" "}
+          </p>{" "}
+        </div>
         <DataTable
           value={datosEmpleadosDisponibles}
           size="small"
@@ -177,6 +243,13 @@ function TableEmpleados() {
         </div>
       </div>
       <div className="card flex flex-column col-auto md:col-4">
+        <div>
+          {" "}
+          <p className="font-bold text-xl text-primary ">
+            {" "}
+            Empleados asignados
+          </p>{" "}
+        </div>
         <DataTable
           value={datosEmpleadosAsignados}
           size="small"
@@ -205,6 +278,7 @@ function TableEmpleados() {
             className="bg-green-500 w-8rem"
             icon=""
             label="Generar Boleta"
+            onClick={handleClickBoleta}
           />
         </div>
         <div className="flex justify-content-center align-items-center p-5">

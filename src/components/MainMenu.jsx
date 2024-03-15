@@ -8,7 +8,8 @@ import { useNavigate } from "react-router-dom";
 import {useEffect} from 'react'
 import { obtenerDatos } from "../db/dbController";
 
-import { id_proyecto,desc_proyecto, SET_ID_PROYECTO} from '../context/userSlice'
+import { SET_ID_PROYECTO} from '../context/userSlice'
+
 import { useDispatch, useSelector } from 'react-redux';
 
 
@@ -17,41 +18,42 @@ import { useDispatch, useSelector } from 'react-redux';
 export default function MainMenu() {
   const menu = useRef(null);
   const navegate = useNavigate();
-  const descripcion = useSelector(desc_proyecto)
-  const id  = useSelector(id_proyecto)
+
+  const descripcion = useSelector(state => state.user.desc_proyecto)
+  const id  = useSelector(state => state.user.id_proyecto)
 
 
-  
   const dispacth = useDispatch()
-
-
-  const obtenerInfo = async () => {
-
-    try {
-      const id_proyecto = await obtenerDatos(1);
-      const desc_proyecto = await obtenerDatos(2);
-    
-      console.log(id_proyecto)
-      console.log(desc_proyecto)
-  
-      dispacth(SET_ID_PROYECTO({id:id_proyecto, descripcion:desc_proyecto}))
-        
-    } catch (error) {
-      
-    }
-    
-
-
-
-  }
-
+ 
 
   useEffect(() => {
     
+
+
+    const obtenerInfo = async () => {
+  
+      try {
+        const id_proyecto = await obtenerDatos(1);
+        const desc_proyecto = await obtenerDatos(2);
+      
+        console.log(id_proyecto)
+        console.log(desc_proyecto)
+    
+        dispacth(SET_ID_PROYECTO({id:id_proyecto, descripcion:desc_proyecto}))
+          
+      } catch (error) {
+        
+      }
+      
+  
+  
+  
+    }
+     
     console.log('OBTENIENDO DATOS APP...')
     obtenerInfo();  
  
-  }, [])
+  }, [dispacth])
 
   const items = [
     {

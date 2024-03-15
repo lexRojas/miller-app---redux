@@ -7,7 +7,7 @@ import { Button } from "primereact/button";
 import {Messages} from "primereact/messages"
 
 
-import {myURL, SET_ID_PROYECTO} from "../context/userSlice"
+import {SET_ID_PROYECTO} from "../context/userSlice"
 import { useSelector} from "react-redux/es/hooks/useSelector";
 import { useDispatch } from "react-redux";
 
@@ -18,7 +18,7 @@ import axios from "axios";
 
 function ProyectoSelector() {
 
-  const baseURL = useSelector(myURL)
+  const baseURL = useSelector((state) => state.user.myURL)
   const dispatch = useDispatch()
 
   

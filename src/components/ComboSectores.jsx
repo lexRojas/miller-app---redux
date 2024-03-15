@@ -4,7 +4,7 @@ import axios from "axios";
 import { useState } from "react";
 import { Dropdown } from "primereact/dropdown";
 
-import { SET_ID_SECTORES, id_proyecto, myURL } from "../context/userSlice";
+import { SET_ID_SECTORES } from "../context/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 
@@ -12,8 +12,8 @@ export default function ComboSectores() {
 
 
 
-  const baseURL  = useSelector(myURL)
-  const id_proyecto_  = useSelector(id_proyecto)
+  const baseURL  = useSelector(state => state.user.myURL)
+  const id_proyecto_  = useSelector(state => state.user.id_proyecto)
 
   const dispatch = useDispatch()
   

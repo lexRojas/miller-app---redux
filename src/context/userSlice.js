@@ -6,7 +6,8 @@ const procesarInitialState = () => {
     id_proyecto: "",
     desc_proyecto: "",
     usuario: "",
-    xURL: "https://psql-backend-a5691387ba13.herokuapp.com",
+    myURL: "https://psql-backend-a5691387ba13.herokuapp.com",
+    //myURL: 'http://localhost:8080',
     id_sector: "",
     actividad: [
       {
@@ -17,7 +18,7 @@ const procesarInitialState = () => {
         "cantidad": 0,
         "rendimiento": 0
       }
-    ]
+    ],
 
   };
 
@@ -29,7 +30,7 @@ export const userSlice = createSlice({
   initialState: procesarInitialState,
   reducers: {
     SET_BASEURL: (state, action) => {
-      state.xURL = action.payload;
+      state.myURL = action.payload;
     },
     SET_ID_PROYECTO: (state, action) => {
       state.id_proyecto = action.payload.id;
@@ -44,6 +45,7 @@ export const userSlice = createSlice({
     SET_ACTIVIDAD: (state, action) => {
       state.actividad = action.payload;
     },
+
   },
 });
 
@@ -55,10 +57,5 @@ export const {
   SET_ACTIVIDAD,
 } = userSlice.actions;
 
-export const myURL = (state) => state.user.xURL;
-export const id_proyecto = (state) => state.user.id_proyecto;
-export const desc_proyecto = (state) => state.user.desc_proyecto;
-export const id_sector = (state) => state.user.id_sector;
-export const actividad = (state) => state.user.actividad;
 
-export default userSlice.reducer;
+

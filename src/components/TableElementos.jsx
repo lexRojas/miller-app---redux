@@ -6,9 +6,6 @@ import axios from "axios";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
-  myURL,
-  id_sector,
-  id_proyecto,
   SET_ACTIVIDAD,
 } from "../context/userSlice";
 
@@ -22,9 +19,9 @@ function TableElementos() {
   const [Loading, setLoading] = useState(true);
 
   //Variables del contexto
-  const baseURL = useSelector(myURL);
-  const id_sector_ = useSelector(id_sector);
-  const id_proyecto_ = useSelector(id_proyecto);
+  const baseURL = useSelector(state => state.user.myURL);
+  const id_sector_ = useSelector(state => state.user.id_sector);
+  const id_proyecto_ = useSelector(state => state.user.id_proyecto);
 
   const dispatch = useDispatch();
 
@@ -112,6 +109,8 @@ function TableElementos() {
           />
         </div>
       ) : (
+        <>
+        <div> <p className="font-bold text-xl text-primary "> Elementos presupuestarios </p>  </div>
         <DataTable
           value={datos}
           expandedRows={expandedRows}
@@ -140,6 +139,7 @@ function TableElementos() {
           <Column field="unidad_medida" header="Und.Med"></Column>
           <Column field="cantidad_elemento" header="Cantidad"></Column>
         </DataTable>
+        </>
       )}
     </div>
   );
