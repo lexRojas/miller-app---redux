@@ -17,6 +17,7 @@ import {
   setHoraFinal,
   setCerrada,
   setCodigoManobra,
+  setFechaFinal,
 } from "../context/boletaSlice";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -50,7 +51,8 @@ function FormBoleta() {
     dispatch(setProyecto(id_proyecto_));
     dispatch(setCerrada(false));
     dispatch(setCodigoManobra(actividad_.codigo_manobra));
-    dispatch(setFechaInicio(convertDate_to_YMD(new Date())));
+    dispatch(setFechaInicio(convertDate_to_YMD((new Date()))));
+    dispatch(setFechaFinal(convertDate_to_YMD((new Date()))))
     dispatch(setUnidadMedida(actividad_.unidad_medida));
     dispatch(setCantidadMedida(actividad_.cantidad));
     dispatch(setComentarios(actividad_.actividad));

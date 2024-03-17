@@ -155,7 +155,7 @@ function TableEmpleados() {
 
   const handleClickBoleta = () => {
     const postData = {
-      'fecha_inicio' : fecha_inicio_,
+     'fecha_inicio' : fecha_inicio_,
       'proyecto'  : proyecto_,
       'ubicacion'  : ubicacion_,
       'comentarios'  : comentarios_,
@@ -169,24 +169,35 @@ function TableEmpleados() {
       'empleados_asignados':  datosEmpleadosAsignados,
     };
 
-    console.log('JSON')
-    console.log(JSON.stringify(postData))
-
-
-    const jsonData = JSON.stringify(postData)
-
-
     // Define the URL where you want to send the POST request
     const url = baseURL+'/boleta';
     // Make the POST request using Axios
-    axios.post(url, jsonData)
+    axios.post(url, postData)
       .then(function (response) {
         // Handle success response
+
+        toastRef.current.show({
+          severity: "info",
+          summary: "Miller CR",
+          detail: "La boleta de ha guardado con exito",
+          life: 3000,
+        });
+
+
         console.log('Response:', response.data);
       })
       .catch(function (error) {
         // Handle error
-        console.error('Error:', error);
+
+        toastRef.current.show({
+          severity: "Error",
+          summary: "Miller CR",
+          detail: error,
+          life: 3000,
+        });
+
+
+
       });
   };
 
