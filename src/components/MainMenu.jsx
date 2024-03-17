@@ -36,9 +36,6 @@ export default function MainMenu() {
         const id_proyecto = await obtenerDatos(1);
         const desc_proyecto = await obtenerDatos(2);
       
-        console.log(id_proyecto)
-        console.log(desc_proyecto)
-    
         dispacth(SET_ID_PROYECTO({id:id_proyecto, descripcion:desc_proyecto}))
           
       } catch (error) {
@@ -50,7 +47,6 @@ export default function MainMenu() {
   
     }
      
-    console.log('OBTENIENDO DATOS APP...')
     obtenerInfo();  
  
   }, [dispacth])

@@ -94,7 +94,6 @@ export const obtenerDatos = (id) => {
       getRequest.onsuccess = function(event) {
         if (event.target.result){
           const {data} = event.target.result;
-          console.log(data)
           resolve(data); 
         }else{
           reject(-1);    

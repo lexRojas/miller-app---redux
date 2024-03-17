@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const procesarInitialState = () => {
   const boleta = {
-        fecha_inicio : new Date(),
+        fecha_inicio : '',
         proyecto  : '',
         ubicacion  : '',
         comentarios  : '',

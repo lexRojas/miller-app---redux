@@ -22,7 +22,8 @@ import {
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { convertDate_to_YMD } from "../tools/convertDate";
+import { convertDate_to_YMD } from "../tools/convertDate" 
+import { getTimeHHMM } from "../tools/getTimeHHMM" 
 
 function FormBoleta() {
   const [isValid, setIsValid] = useState(true);
@@ -37,7 +38,7 @@ function FormBoleta() {
   const [descripcion, state_setDescripcion] = useState("");
   const [medida, state_setCantMedida] = useState(0);
   const [um, state_setUM] = useState("");
-  const [hora_inicio, state_SetHoraInicio] = useState('')
+  const [hora_inicio, state_SetHoraInicio] = useState(getTimeHHMM())
   const [hora_final, state_setHoraFinal] = useState("17:00");
 
   useEffect(() => {
@@ -46,7 +47,8 @@ function FormBoleta() {
     state_setUM(actividad_.unidad_medida);
     state_setCantMedida(actividad_.cantidad);
     state_setHoraFinal("17:00");
-
+    state_SetHoraInicio(getTimeHHMM())
+ 
     // Valores que se ingresan al contexto
     dispatch(setProyecto(id_proyecto_));
     dispatch(setCerrada(false));
@@ -57,6 +59,7 @@ function FormBoleta() {
     dispatch(setCantidadMedida(actividad_.cantidad));
     dispatch(setComentarios(actividad_.actividad));
     dispatch(setHoraFinal("17:00"));
+    dispatch(setHoraInicio(getTimeHHMM()))
 
     ubicacion_ref.current.focus();
   }, [actividad_, dispatch, id_proyecto_]);
@@ -75,6 +78,7 @@ function FormBoleta() {
     const horaRegex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
 
     if (horaRegex.test(v)) {
+      setHoraInicio(v)
       dispatch(setHoraInicio(v));
       setIsValid(true);
     } else {
@@ -93,7 +97,7 @@ function FormBoleta() {
         detail:'Digito una hora en formato incorrecto HH:MM (hora militar)',
         life:3000,
       })
-      state_SetHoraInicio('')  
+      //state_SetHoraInicio('')  
     }
   };
 

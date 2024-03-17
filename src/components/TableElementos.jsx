@@ -71,8 +71,6 @@ function TableElementos() {
 
   const handleClick = (datos) => {
     dispatch(SET_ACTIVIDAD(datos));
-    console.log("valor btn");
-    console.log(datos);
   };
 
   const rowExpansionTemplate = (data) => {

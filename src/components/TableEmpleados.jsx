@@ -27,28 +27,24 @@ function TableEmpleados() {
     selectedEmpleadoAsignado = o;
   };
 
-  const baseURL = useSelector(state => state.user.myURL);
-  const id_proyecto_ = useSelector(state => state.user.id_proyecto);
+  const baseURL = useSelector((state) => state.user.myURL);
+  const id_proyecto_ = useSelector((state) => state.user.id_proyecto);
 
+  const fecha_inicio_ = useSelector((state) => state.boleta.fecha_inicio);
+  const proyecto_ = useSelector((state) => state.boleta.proyecto);
+  const ubicacion_ = useSelector((state) => state.boleta.ubicacion);
+  const comentarios_ = useSelector((state) => state.boleta.comentarios);
+  const cantidad_medida_ = useSelector((state) => state.boleta.cantidad_medida);
+  const unidad_medida_ = useSelector((state) => state.boleta.unidad_medida);
+  const hora_inicio_ = useSelector((state) => state.boleta.hora_inicio);
+  const hora_final_ = useSelector((state) => state.boleta.hora_final);
+  const cerrada_ = useSelector((state) => state.boleta.cerrada);
+  const codigo_manobra_ = useSelector((state) => state.boleta.codigo_manobra);
+  const fecha_final_ = useSelector((state) => state.boleta.fecha_final);
 
-  const fecha_inicio_ = useSelector(state => state.boleta.fecha_inicio)
-  const proyecto_= useSelector(state => state.boleta.proyecto)
-  const ubicacion_= useSelector(state => state.boleta.ubicacion)
-  const comentarios_= useSelector(state => state.boleta.comentarios)
-  const cantidad_medida_= useSelector(state => state.boleta.cantidad_medida)
-  const unidad_medida_= useSelector(state => state.boleta.unidad_medida)
-  const hora_inicio_= useSelector(state => state.boleta.hora_inicio)
-  const hora_final_= useSelector(state => state.boleta.hora_final)
-  const cerrada_= useSelector(state => state.boleta.cerrada)
-  const codigo_manobra_= useSelector(state => state.boleta.codigo_manobra)
-  const fecha_final_= useSelector(state => state.boleta.fecha_final)
+  // const _empleados_asignados= useSelector(empleados_asignados)
 
-
-
- // const _empleados_asignados= useSelector(empleados_asignados)
-
-
- // const dispatch = useDispatch()
+  // const dispatch = useDispatch()
 
   const toastRef = useRef(null);
 
@@ -69,15 +65,10 @@ function TableEmpleados() {
   };
 
   const fijoEmpleadoDisponible = (valor) => {
-    console.log("empleado disponible");
-    console.log(valor);
     setSelectedEmpleadoDisponible(valor);
   };
 
   const fijoEmpleadoAsignado = (valor) => {
-    console.log("empleado asignado");
-    console.log(valor);
-
     setSelectedEmpleadoAsignado(valor);
   };
 
@@ -155,50 +146,74 @@ function TableEmpleados() {
 
   const handleClickBoleta = () => {
     const postData = {
-     'fecha_inicio' : fecha_inicio_,
-      'proyecto'  : proyecto_,
-      'ubicacion'  : ubicacion_,
-      'comentarios'  : comentarios_,
-      'cantidad_medida' : cantidad_medida_,
-      'unidad_medida': unidad_medida_,
-      'hora_inicio': hora_inicio_,
-      'hora_final': hora_final_,
-      'cerrada': cerrada_,
-      'codigo_manobra': codigo_manobra_,
-      'fecha_final': fecha_final_,
-      'empleados_asignados':  datosEmpleadosAsignados,
+      fecha_inicio: fecha_inicio_,
+      proyecto: proyecto_,
+      ubicacion: ubicacion_,
+      comentarios: comentarios_,
+      cantidad_medida: cantidad_medida_,
+      unidad_medida: unidad_medida_,
+      hora_inicio: hora_inicio_,
+      hora_final: hora_final_,
+      cerrada: cerrada_,
+      codigo_manobra: codigo_manobra_,
+      fecha_final: fecha_final_,
+      empleados_asignados: datosEmpleadosAsignados,
     };
 
-    // Define the URL where you want to send the POST request
-    const url = baseURL+'/boleta';
-    // Make the POST request using Axios
-    axios.post(url, postData)
-      .then(function (response) {
-        // Handle success response
+    let validacion = false;
 
-        toastRef.current.show({
-          severity: "info",
-          summary: "Miller CR",
-          detail: "La boleta de ha guardado con exito",
-          life: 3000,
-        });
-
-
-        console.log('Response:', response.data);
-      })
-      .catch(function (error) {
-        // Handle error
-
-        toastRef.current.show({
-          severity: "Error",
-          summary: "Miller CR",
-          detail: error,
-          life: 3000,
-        });
-
-
-
+    if ((hora_inicio_ === ":") | (hora_inicio_ === "")) {
+      toastRef.current.show({
+        severity: "Error",
+        summary: "Miller CR",
+        detail: 'Debe introducir una hora de inicio válida HH:MM',
+        life: 3000,
       });
+  
+      validacion = false;
+    } else {
+      validacion = true;
+    }
+
+    if (cantidad_medida_ > 0) {
+      validacion = true;
+    } else {
+      validacion = false;
+      toastRef.current.show({
+        severity: "Error",
+        summary: "Miller CR",
+        detail: 'Debe introducir una cantidad mayor a cero',
+        life: 3000,
+      });
+    }
+
+    if (validacion) {
+      // Define the URL where you want to send the POST request
+      const url = baseURL + "/boleta";
+      // Make the POST request using Axios
+      axios
+        .post(url, postData)
+        .then(function (response) {
+          // Handle success response
+
+          toastRef.current.show({
+            severity: "info",
+            summary: "Miller CR",
+            detail: "La boleta de ha guardado con exito",
+            life: 3000,
+          });
+        })
+        .catch(function (error) {
+          // Handle error
+
+          toastRef.current.show({
+            severity: "Error",
+            summary: "Miller CR",
+            detail: error,
+            life: 3000,
+          });
+        });
+    }
   };
 
   return (
