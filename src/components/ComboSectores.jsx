@@ -30,6 +30,8 @@ export default function ComboSectores() {
     setselectedSector(valor)
   }
 
+
+
   const get_sectores = async (presupuesto = "") => {
     await axios
       .get(`${baseURL}/tb_sectores`, { params: { presupuesto } })

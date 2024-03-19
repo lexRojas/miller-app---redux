@@ -17,6 +17,7 @@ import BoletaAsignacion from "./pages/BoletaAsignacion"
 import MainMenu from './components/MainMenu';
 import Login from './pages/Login';
 import ProyectoSelector from './pages/ProyectoSelector';
+import TableBoletas from './components/TableBoletas';
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
             <Route path="/proyectos" element={<ProyectoSelector />} />
             <Route path="/BoletaAsignacion" element={<BoletaAsignacion />} />
             <Route path="/Login" element={ <Login/> } />
+            <Route path="/DetalleBoletas" element={ <TableBoletas/> } />            
             <Route path="*" element={<Login />} />
           </Routes>
         </div>

@@ -70,7 +70,13 @@ export default function MainMenu() {
             navegate("/BoletaAsignacion");
           },
         },
-      ],
+        {
+          label: "Ver boletas asignadas",
+          icon: "pi pi-fw pi-align-left",
+          command: () => {
+            navegate("/DetalleBoletas");
+          },
+        }      ],
     },
     {
       label: "Reportes",
