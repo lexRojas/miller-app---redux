@@ -9,6 +9,7 @@ import { Toast } from "primereact/toast";
 import axios from "axios";
 
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function TableEmpleados() {
   const [datosEmpleadosDisponibles, setDatosEmpleadosDisponibles] = useState(
@@ -41,12 +42,16 @@ function TableEmpleados() {
   const cerrada_ = useSelector((state) => state.boleta.cerrada);
   const codigo_manobra_ = useSelector((state) => state.boleta.codigo_manobra);
   const fecha_final_ = useSelector((state) => state.boleta.fecha_final);
+  const cantidad_mano_obra_ = useSelector((state) => state.user.actividad.cantidad);
+  
+
 
   // const _empleados_asignados= useSelector(empleados_asignados)
 
   // const dispatch = useDispatch()
 
   const toastRef = useRef(null);
+  const navegate = useNavigate();
 
   const get_empleados = async (presupuesto = 0) => {
     if (presupuesto) {
@@ -160,31 +165,36 @@ function TableEmpleados() {
       empleados_asignados: datosEmpleadosAsignados,
     };
 
-    let validacion = false;
+    let validacion = true;
 
     if ((hora_inicio_ === ":") | (hora_inicio_ === "")) {
+      validacion = false;
       toastRef.current.show({
         severity: "Error",
         summary: "Miller CR",
         detail: 'Debe introducir una hora de inicio válida HH:MM',
         life: 3000,
       });
-  
-      validacion = false;
-    } else {
-      validacion = true;
     }
 
-    if (cantidad_medida_ > 0) {
-      validacion = true;
-    } else {
+    if ((cantidad_medida_ <= 0) || (cantidad_medida_ > cantidad_mano_obra_)) {
       validacion = false;
       toastRef.current.show({
         severity: "Error",
         summary: "Miller CR",
-        detail: 'Debe introducir una cantidad mayor a cero',
+        detail: 'Debe introducir una cantidad valida',
         life: 3000,
       });
+    }
+
+    if (!datosEmpleadosAsignados){
+      validacion=false
+      toastRef.current.show({
+        severity:"Error",
+        summary:"Miller CR",
+        detail: "Debe tener al menos un empleado asignado",
+        life:3000,
+      })
     }
 
     if (validacion) {
@@ -215,6 +225,10 @@ function TableEmpleados() {
         });
     }
   };
+
+  const handledClckCancelar=()=>{
+    navegate('/app')
+  }
 
   return (
     <div className="flex flex-column col-12 md:flex-row">
@@ -308,7 +322,7 @@ function TableEmpleados() {
           />
         </div>
         <div className="flex justify-content-center align-items-center p-5">
-          <Button className="w-8rem" icon="" label="Cancelar" />
+          <Button className="w-8rem" icon="" label="Cancelar" onClick={handledClckCancelar} />
         </div>
       </div>
       <Toast ref={toastRef} />

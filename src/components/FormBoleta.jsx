@@ -25,6 +25,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { convertDate_to_YMD } from "../tools/convertDate" 
 import { getTimeHHMM } from "../tools/getTimeHHMM" 
 
+
 function FormBoleta() {
   const [isValid, setIsValid] = useState(true);
 
@@ -40,6 +41,9 @@ function FormBoleta() {
   const [um, state_setUM] = useState("");
   const [hora_inicio, state_SetHoraInicio] = useState(getTimeHHMM())
   const [hora_final, state_setHoraFinal] = useState("17:00");
+  const [isValidCantidad , setisValidCantidad ] = useState(true)
+  //const [visible , setVisible ] = useState(false)
+
 
   useEffect(() => {
     // Valores que provienen de la lista de actividades
@@ -70,6 +74,14 @@ function FormBoleta() {
   };
 
   const handleCantidadMedidaChange = (v) => {
+
+    if((v>actividad_.cantidad) || (v<=0)){
+       
+        setisValidCantidad(false)
+    }else{
+      setisValidCantidad(true)
+    }
+
     state_setCantMedida(v);
     dispatch(setCantidadMedida(v));
   };
@@ -137,7 +149,11 @@ function FormBoleta() {
           <InputNumber
             value={medida}
             onChange={(e) => handleCantidadMedidaChange(e.value)}
+            className={!isValidCantidad ? "p-invalid":""}
           />
+          {!isValidCantidad && (
+          <small className="p-error">Cantidad no permitida </small>
+          )}
         </div>
         <div className="flex flex-column gap-2 p-0 col-6">
           <label htmlFor="planos">Unidad de Medida</label>
@@ -176,6 +192,7 @@ function FormBoleta() {
         </div>
       </div>
       <Toast ref={toastRef}/>
+      {/* <Mensaje titulo="Miller"  mensaje="hola desde mi componente" tipo="error" tiempo={3000} visible={visible} /> */}
     </div>
   );
 }
