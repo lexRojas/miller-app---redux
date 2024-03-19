@@ -192,7 +192,6 @@ function FormBoleta() {
         </div>
       </div>
       <Toast ref={toastRef}/>
-      {/* <Mensaje titulo="Miller"  mensaje="hola desde mi componente" tipo="error" tiempo={3000} visible={visible} /> */}
     </div>
   );
 }
