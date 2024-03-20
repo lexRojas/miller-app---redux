@@ -10,14 +10,14 @@ const procesarInitialState = () => {
     //myURL: 'http://localhost:8080',
     id_sector: "",
     actividad: [
-      {
-        "presupuesto": "",
-        "codigo_manobra": 0,
-        "actividad": "",
-        "unidad_medida": "",
-        "cantidad": 0,
-        "rendimiento": 0
-      }
+      // {
+      //   "presupuesto": "",
+      //   "codigo_manobra": 0,
+      //   "actividad": "",
+      //   "unidad_medida": "",
+      //   "cantidad": 0,
+      //   "rendimiento": 0
+      // }
     ],
 
   };

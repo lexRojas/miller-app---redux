@@ -5,6 +5,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
+import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
 
 import axios from "axios";
 
@@ -42,13 +43,38 @@ function TableEmpleados() {
   const cerrada_ = useSelector((state) => state.boleta.cerrada);
   const codigo_manobra_ = useSelector((state) => state.boleta.codigo_manobra);
   const fecha_final_ = useSelector((state) => state.boleta.fecha_final);
-  const cantidad_mano_obra_ = useSelector((state) => state.user.actividad.cantidad);
-  
+  const cantidad_mano_obra_ = useSelector(
+    (state) => state.user.actividad.cantidad
+  );
+
+  const confirm1 = () => {
+    confirmDialog({
+      message: messageContent,
+        //"Boleta asignada con exito! ¿Desea ir a ver las boletas asignadas? ",
+      header: "Confirmation",
+      icon: "pi pi-thumbs-up",
+      defaultFocus: "accept",
+      accept,
+      reject,
+    });
+  };
+
+  const messageContent = (
+    <div>
+      <p className="font-bold text-m text-primary"> <strong>Se ha incluido su boleta de asignacion. </strong> </p>
+      <p className="  text-s text-secundary">¿Desea ir a ver las boleta asignadas?</p>
+    </div>
+  );
 
 
-  // const _empleados_asignados= useSelector(empleados_asignados)
+  const accept = () => {
+     navegate('/DetalleBoletas')      
+  }
+  const reject = () => {
+    window.location.reload();
+  }
 
-  // const dispatch = useDispatch()
+
 
   const toastRef = useRef(null);
   const navegate = useNavigate();
@@ -170,31 +196,41 @@ function TableEmpleados() {
     if ((hora_inicio_ === ":") | (hora_inicio_ === "")) {
       validacion = false;
       toastRef.current.show({
-        severity: "Error",
+        severity: "error",
         summary: "Miller CR",
-        detail: 'Debe introducir una hora de inicio válida HH:MM',
+        detail: "Debe introducir una hora de inicio válida HH:MM",
         life: 3000,
       });
     }
 
-    if ((cantidad_medida_ <= 0) || (cantidad_medida_ > cantidad_mano_obra_)) {
+    if (cantidad_medida_ <= 0 || cantidad_medida_ > cantidad_mano_obra_) {
       validacion = false;
       toastRef.current.show({
-        severity: "Error",
+        severity: "error",
         summary: "Miller CR",
-        detail: 'Debe introducir una cantidad valida',
+        detail: "Debe introducir una cantidad valida",
         life: 3000,
       });
     }
 
-    if (!datosEmpleadosAsignados){
-      validacion=false
+    if (!datosEmpleadosAsignados || datosEmpleadosAsignados.length === 0) {
+      validacion = false;
       toastRef.current.show({
-        severity:"Error",
-        summary:"Miller CR",
+        severity: "error",
+        summary: "Miller CR",
         detail: "Debe tener al menos un empleado asignado",
-        life:3000,
-      })
+        life: 3000,
+      });
+    }
+
+    if (!postData.codigo_manobra) {
+      validacion = false;
+      toastRef.current.show({
+        severity: "error",
+        summary: "Miller CR",
+        detail: "Pendiente definir una actividad",
+        life: 3000,
+      });
     }
 
     if (validacion) {
@@ -205,19 +241,13 @@ function TableEmpleados() {
         .post(url, postData)
         .then(function (response) {
           // Handle success response
-
-          toastRef.current.show({
-            severity: "info",
-            summary: "Miller CR",
-            detail: "La boleta de ha guardado con exito",
-            life: 3000,
-          });
+            confirm1()
         })
         .catch(function (error) {
           // Handle error
 
           toastRef.current.show({
-            severity: "Error",
+            severity: "error",
             summary: "Miller CR",
             detail: error,
             life: 3000,
@@ -226,9 +256,9 @@ function TableEmpleados() {
     }
   };
 
-  const handledClckCancelar=()=>{
-    navegate('/app')
-  }
+  const handledClckCancelar = () => {
+    navegate("/app");
+  };
 
   return (
     <div className="flex flex-column col-12 md:flex-row">
@@ -322,10 +352,16 @@ function TableEmpleados() {
           />
         </div>
         <div className="flex justify-content-center align-items-center p-5">
-          <Button className="w-8rem" icon="" label="Cancelar" onClick={handledClckCancelar} />
+          <Button
+            className="w-8rem"
+            icon=""
+            label="Cancelar"
+            onClick={handledClckCancelar}
+          />
         </div>
       </div>
       <Toast ref={toastRef} />
+      <ConfirmDialog />
     </div>
   );
 }

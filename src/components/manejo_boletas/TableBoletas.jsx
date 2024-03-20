@@ -3,12 +3,16 @@ import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { InputSwitch } from "primereact/inputswitch";
-import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
-import { useNavigate } from "react-router-dom";
+import { Button } from "primereact/button";
 
-export default function TableBoletas() {
+export default function TableBoletas({
+  estado,
+  selectedProducts,
+  setSelectedProducts,
+  date_inicio,
+  date_final,
+}) {
   // Variables del contexto
 
   const id_proyecto_ = useSelector((state) => state.user.id_proyecto);
@@ -16,12 +20,29 @@ export default function TableBoletas() {
 
   // Variables de estado interno
 
-  const [estado, setEstado] = useState(false);
   const [detalle_boletas, setDetalle_Boletas] = useState([]);
-  const [selectedProducts, setSelectedProducts] = useState(null);
-
+  const [count, setCount] = useState(10);
   const toastControl = useRef(null);
-  const navegate = useNavigate()
+
+  // Campos html
+
+  const acionsEmployee = () => {
+    return (
+      <div>
+        <Button className="m-1" icon="pi pi-plus"/>
+        <Button className="m-1" icon="pi pi-minus" />
+        <Button className="m-1" icon="pi pi-eye"/> 
+      </div>
+    );
+  };
+
+  const CountEmployee = (options) => {
+    const {empleados} = options
+    
+    setCount(empleados.length)
+
+    return <div className="p-datatable-tbody" >{count}</div>;
+  };
 
   useEffect(() => {
     const getBoletas = async () => {
@@ -37,40 +58,11 @@ export default function TableBoletas() {
         });
     };
 
-    getBoletas(id_proyecto_, estado);
-  }, [estado, id_proyecto_, myURL_]);
-
-  const handleClickCerrar = () => {
-    if (selectedProducts) {
-    } else {
-      toastControl.current.show({
-        severity: "error",
-        summary: "Miller CR",
-        detail: "Debes seleccionar alguna boleta de asignacion",
-        life: 3000,
-      });
-    }
-  };
-
-  const handleClickCancelar = () =>{
-    navegate('/app')
-  }
+    getBoletas(id_proyecto_);
+  }, [id_proyecto_, myURL_, estado]);
 
   return (
     <div className="card">
-      <div>
-        <p className="font-bold text-xl text-primary">
-          Lista de boletas asignadas
-        </p>
-        <div className="flex justify-content-center align-items-center m-4 gap-5">
-          <InputSwitch
-            inputId="estado_boleta"
-            checked={estado}
-            onChange={(e) => setEstado(e.value)}
-          />
-          <label htmlFor="estado_boleta">Boletas Cerradas</label>
-        </div>
-      </div>
       <DataTable
         value={detalle_boletas}
         selectionMode="checkbox"
@@ -78,21 +70,28 @@ export default function TableBoletas() {
         onSelectionChange={(e) => setSelectedProducts(e.value)}
         dataKey="id"
         tableStyle={{ minWidth: "50rem" }}
+        rows={10}
+        paginator
+        emptyMessage="No existen boletas de asignacion de labores o revise el filtro aplicado"
       >
         <Column
           selectionMode="multiple"
           headerStyle={{ width: "3rem" }}
         ></Column>
+
         <Column field="id" header="#Boleta" sortField={true}></Column>
-        <Column field="fecha_inicio" header="Fecha Apertura" sortable></Column>
+        <Column
+          field="fecha_inicio"
+          filter
+          header="Fecha Apertura"
+          sortable
+        ></Column>
         <Column field="codigo_manobra" header="Codigo"></Column>
-        <Column field="comentarios" header="Actividad" sortable></Column>
+        <Column field="comentarios" header="Actividad" sortable filter></Column>
         <Column field="cantidad_asignada" header="Cantidad"></Column>
+        <Column header="Empleado" body={CountEmployee} align="center"></Column>
+        <Column header="Empleados" body={acionsEmployee} align="center"></Column>
       </DataTable>
-      <div className="flex justify-content-center align-center mt-4 gap-5">
-        <Button label="Cerrar Boletas" onClick={handleClickCerrar} />
-        <Button label="Cancelar" onClick={handleClickCancelar} />
-      </div>
       <Toast ref={toastControl} />
     </div>
   );

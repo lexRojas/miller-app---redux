@@ -17,7 +17,7 @@ import BoletaAsignacion from "./pages/BoletaAsignacion"
 import MainMenu from './components/MainMenu';
 import Login from './pages/Login';
 import ProyectoSelector from './pages/ProyectoSelector';
-import TableBoletas from './components/TableBoletas';
+import DetalleBoletas from './pages/DetalleBoletas';
 
 function App() {
 
@@ -28,13 +28,13 @@ function App() {
     <div className='flex flex-column w-screen'>
       <BrowserRouter>
           <MainMenu />
-        <div className='flex justify-content-center flex-wrap w-screen'>
+        <div className='flex justify-content-center pt-3 flex-wrap w-screen'>
           <Routes>
             <Route path="/App" element={<></>} />
             <Route path="/proyectos" element={<ProyectoSelector />} />
             <Route path="/BoletaAsignacion" element={<BoletaAsignacion />} />
             <Route path="/Login" element={ <Login/> } />
-            <Route path="/DetalleBoletas" element={ <TableBoletas/> } />            
+            <Route path="/DetalleBoletas" element={ <DetalleBoletas/> } />            
             <Route path="*" element={<Login />} />
           </Routes>
         </div>
