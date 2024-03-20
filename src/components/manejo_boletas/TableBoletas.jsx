@@ -5,7 +5,8 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
-
+import { Dialog } from "primereact/dialog";
+import TableEmpleadosView from "./TableEmpleadosView";
 export default function TableBoletas({
   estado,
   selectedProducts,
@@ -21,27 +22,36 @@ export default function TableBoletas({
   // Variables de estado interno
 
   const [detalle_boletas, setDetalle_Boletas] = useState([]);
-  const [count, setCount] = useState(10);
+  const [visible, setVisible] = useState(false);
+  const [empleados, setEmpleados] = useState([]);
   const toastControl = useRef(null);
 
   // Campos html
 
-  const acionsEmployee = () => {
+  const acionsEmployee = (options) => {
     return (
       <div>
-        <Button className="m-1" icon="pi pi-plus"/>
+        <Button className="m-1" icon="pi pi-plus" />
         <Button className="m-1" icon="pi pi-minus" />
-        <Button className="m-1" icon="pi pi-eye"/> 
+        <Button className="m-1" icon="pi pi-eye"  onClick={e=> showEmpleados(options)} />
       </div>
     );
   };
 
-  const CountEmployee = (options) => {
-    const {empleados} = options
-    
-    setCount(empleados.length)
+  const showEmpleados = (options) => {
 
-    return <div className="p-datatable-tbody" >{count}</div>;
+    console.log(options)  
+    const { empleados } = options;
+    setEmpleados(empleados)
+    setVisible(true);
+  };
+
+  const CountEmployee = (options) => {
+    const { empleados } = options;
+
+    const cantidad = empleados.length;
+
+    return <div className="p-datatable-tbody">{cantidad}</div>;
   };
 
   useEffect(() => {
@@ -88,11 +98,23 @@ export default function TableBoletas({
         ></Column>
         <Column field="codigo_manobra" header="Codigo"></Column>
         <Column field="comentarios" header="Actividad" sortable filter></Column>
-        <Column field="cantidad_asignada" header="Cantidad"></Column>
-        <Column header="Empleado" body={CountEmployee} align="center"></Column>
-        <Column header="Empleados" body={acionsEmployee} align="center"></Column>
+        <Column field="cantidad_asignada" header="Cantidad Asignada"></Column>
+        <Column header="Empleados" body={CountEmployee} align="center"></Column>
+        <Column
+          header="Acciones (Empleados)"
+          body={acionsEmployee}
+          align="center"
+        ></Column>
       </DataTable>
       <Toast ref={toastControl} />
+      <Dialog
+        header="Sistema Horas Miller"
+        visible={visible}
+        style={{ width: "50vw" }}
+        onHide={() => setVisible(false)}
+      >
+             <TableEmpleadosView empleados={empleados}  />
+      </Dialog>
     </div>
   );
 }
