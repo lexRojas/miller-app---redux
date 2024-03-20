@@ -13,6 +13,7 @@ export default function TableEmpleadosView({
   return (
     <div className="card">
       <DataTable
+        selectionMode= "single"
         value={empleados}
         dataKey="id"
         tableStyle={{ minWidth: "20rem" }}

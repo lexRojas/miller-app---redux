@@ -26,7 +26,7 @@ export default function TableBoletas({
   const [empleados, setEmpleados] = useState([]);
   const toastControl = useRef(null);
 
-  // Campos html
+  // Componentes internos 
 
   const acionsEmployee = (options) => {
     return (
@@ -38,6 +38,22 @@ export default function TableBoletas({
     );
   };
 
+  const CountEmployee = (options) => {
+    const { empleados } = options;
+
+    const cantidad = empleados.length;
+
+    return <div className="p-datatable-tbody">{cantidad}</div>;
+  };
+
+
+  const footerContent = (
+    <Button label="Entendido!" icon="pi pi-check" onClick={() => setVisible(false)} autoFocus />
+  )
+  
+
+  // funciones 
+
   const showEmpleados = (options) => {
 
     console.log(options)  
@@ -46,13 +62,6 @@ export default function TableBoletas({
     setVisible(true);
   };
 
-  const CountEmployee = (options) => {
-    const { empleados } = options;
-
-    const cantidad = empleados.length;
-
-    return <div className="p-datatable-tbody">{cantidad}</div>;
-  };
 
   useEffect(() => {
     const getBoletas = async () => {
@@ -112,6 +121,7 @@ export default function TableBoletas({
         visible={visible}
         style={{ width: "50vw" }}
         onHide={() => setVisible(false)}
+        footer={footerContent}
       >
              <TableEmpleadosView empleados={empleados}  />
       </Dialog>
