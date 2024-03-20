@@ -13,6 +13,10 @@ export default function ActionBoletas({selectedProducts}) {
     navegate('/app')
   }
 
+  const handleClickCrearBoleta = () =>{
+    navegate('/BoletaAsignacion')
+  }
+
   const handleClickCerrar = () => {
     console.log(selectedProducts)
     if (selectedProducts) {
@@ -31,6 +35,7 @@ export default function ActionBoletas({selectedProducts}) {
     <div className="card">
      <div className="flex justify-content-center align-center mt-4 gap-5">
         <Button label="Cerrar Boletas" onClick={handleClickCerrar} />
+        <Button severity="success" label="Crear Boleta" onClick={handleClickCrearBoleta} />
         <Button label="Cancelar" onClick={handleClickCancelar} />
       </div>
       <Toast ref={toastControl} />

@@ -22,7 +22,10 @@ export default function TableBoletas({
   // Variables de estado interno
 
   const [detalle_boletas, setDetalle_Boletas] = useState([]);
-  const [visible, setVisible] = useState(false);
+  const [visibleLista, setVisibleLista] = useState(false);
+  const [visibleAddEmployee, setVisibleAddEmployee] = useState(false);
+  const [visibleRemoveEmployee, setVisibleRemoveEmployee] = useState(false);
+  
   const [empleados, setEmpleados] = useState([]);
   const toastControl = useRef(null);
 
@@ -31,9 +34,9 @@ export default function TableBoletas({
   const acionsEmployee = (options) => {
     return (
       <div>
-        <Button className="m-1" icon="pi pi-plus" />
-        <Button className="m-1" icon="pi pi-minus" />
-        <Button className="m-1" icon="pi pi-eye"  onClick={e=> showEmpleados(options)} />
+        <Button className="m-1" icon="pi pi-plus"  severity="success" onClick={e=> showEmpleadosAdd(options)}/>
+        <Button className="m-1" icon="pi pi-minus" severity="danger" onClick={e=> showEmpleadosRemove(options)} />
+        <Button className="m-1" icon="pi pi-eye"   onClick={e=> showEmpleados(options)} />
       </div>
     );
   };
@@ -47,20 +50,43 @@ export default function TableBoletas({
   };
 
 
-  const footerContent = (
-    <Button label="Entendido!" icon="pi pi-check" onClick={() => setVisible(false)} autoFocus />
-  )
-  
 
   // funciones 
 
   const showEmpleados = (options) => {
-
-    console.log(options)  
     const { empleados } = options;
     setEmpleados(empleados)
-    setVisible(true);
+    setVisibleLista(true);
   };
+
+  const showEmpleadosRemove = (options) => {
+    const { empleados } = options;
+    setEmpleados(empleados)
+    setVisibleRemoveEmployee(true);
+  };
+
+  const showEmpleadosAdd = (options) => {
+    const { empleados } = options;
+    setEmpleados(empleados)
+    setVisibleAddEmployee(true);
+  };
+
+
+  const removeEmployee = (empleadosSelected) =>{
+
+    console.log(empleadosSelected)
+    setVisibleRemoveEmployee(false)
+
+  }
+
+
+  const addEmployee = (empleadosSelected) =>{
+
+    console.log(empleadosSelected)
+    setVisibleAddEmployee(false)
+
+  }
+
 
 
   useEffect(() => {
@@ -117,14 +143,33 @@ export default function TableBoletas({
       </DataTable>
       <Toast ref={toastControl} />
       <Dialog
-        header="Sistema Horas Miller"
-        visible={visible}
-        style={{ width: "50vw" }}
-        onHide={() => setVisible(false)}
-        footer={footerContent}
+        header="Lista de empleados asignados en esta boleta"
+        visible={visibleLista}
+        style={{ width: "30vw" }}
+        onHide={() => setVisibleLista(false)}
       >
-             <TableEmpleadosView empleados={empleados}  />
+             <TableEmpleadosView empleados={empleados}  buttonOptions={[{visible:false, label:"", action:null} ,
+                                                                                               {visible:true, label:"Entendido", action:setVisibleLista}]}  />
       </Dialog>
+      <Dialog
+        header="Lista de empleados (Disponibles para añadir a la actividad)"
+        visible={visibleAddEmployee}
+        style={{ width: "30vw" }}
+        onHide={() => setVisibleAddEmployee(false)}
+      >
+             <TableEmpleadosView empleados={empleados}  buttonOptions={[{visible:true, label:"Añadir", action:addEmployee} ,
+                                                                                               {visible:true, label:"Cancelar", action:setVisibleAddEmployee}]}  />
+      </Dialog>
+      <Dialog
+        header="Lista de empleados para Eliminar de la actividad"
+        visible={visibleRemoveEmployee}
+        style={{ width: "30vw" }}
+        onHide={() => setVisibleRemoveEmployee(false)}
+      >
+             <TableEmpleadosView empleados={empleados} buttonOptions={[{visible:true, label:"Remover", action:removeEmployee} ,
+                                                                                               {visible:true, label:"Cancelar", action:setVisibleRemoveEmployee}]}  />
+      </Dialog>
+      
     </div>
   );
 }
