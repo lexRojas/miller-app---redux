@@ -14,7 +14,7 @@ export default function ActionBoletas({selectedProducts}) {
   }
 
   const handleClickCrearBoleta = () =>{
-    navegate('/BoletaAsignacion')
+    navegate('/BoletaAsignacion ')
   }
 
   const handleClickCerrar = () => {

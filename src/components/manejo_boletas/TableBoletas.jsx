@@ -7,6 +7,9 @@ import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import TableEmpleadosView from "./TableEmpleadosView";
+import { convertDate_to_YMD } from "../../tools/convertDate";
+import { getTimeHHMM } from "../../tools/getTimeHHMM";
+
 export default function TableBoletas({
   estado,
   selectedProducts,
@@ -25,18 +28,34 @@ export default function TableBoletas({
   const [visibleLista, setVisibleLista] = useState(false);
   const [visibleAddEmployee, setVisibleAddEmployee] = useState(false);
   const [visibleRemoveEmployee, setVisibleRemoveEmployee] = useState(false);
-  
+
+  const [boletaClickAdd_Remove, setboletaClickAdd_Remove] = useState(null);
+
   const [empleados, setEmpleados] = useState([]);
   const toastControl = useRef(null);
 
-  // Componentes internos 
+  // Componentes internos
 
   const acionsEmployee = (options) => {
     return (
       <div>
-        <Button className="m-1" icon="pi pi-plus"  severity="success" onClick={e=> showEmpleadosAdd(options)}/>
-        <Button className="m-1" icon="pi pi-minus" severity="danger" onClick={e=> showEmpleadosRemove(options)} />
-        <Button className="m-1" icon="pi pi-eye"   onClick={e=> showEmpleados(options)} />
+        <Button
+          className="m-1"
+          icon="pi pi-plus"
+          severity="success"
+          onClick={(e) => showEmpleadosAdd(options)}
+        />
+        <Button
+          className="m-1"
+          icon="pi pi-minus"
+          severity="danger"
+          onClick={(e) => showEmpleadosRemove(options)}
+        />
+        <Button
+          className="m-1"
+          icon="pi pi-eye"
+          onClick={(e) => showEmpleados(options)}
+        />
       </div>
     );
   };
@@ -49,45 +68,87 @@ export default function TableBoletas({
     return <div className="p-datatable-tbody">{cantidad}</div>;
   };
 
-
-
-  // funciones 
+  // funciones
 
   const showEmpleados = (options) => {
     const { empleados } = options;
-    setEmpleados(empleados)
+    setEmpleados(empleados);
     setVisibleLista(true);
   };
 
   const showEmpleadosRemove = (options) => {
-    const { empleados } = options;
-    setEmpleados(empleados)
-    setVisibleRemoveEmployee(true);
+    if (options.empleados.length > 1) {
+      const { empleados } = options;
+      const { id } = options;
+
+      setboletaClickAdd_Remove(id);
+      setEmpleados(empleados);
+      setVisibleRemoveEmployee(true);
+    } else {
+      toastControl.current.show({
+        severity:"error",
+        summary: "Miller CR",
+        detail: "No se pueden reducir a menos de una persona una boleta",
+        life:3000
+      })
+
+    }
   };
 
   const showEmpleadosAdd = (options) => {
     const { empleados } = options;
-    setEmpleados(empleados)
+
+    setEmpleados(empleados);
     setVisibleAddEmployee(true);
   };
 
+  const pacthEmployee = async (values) => {
+    if (values) {
+      // Define the URL where you want to send the POST request
+      const url = myURL_ + "/cerrar";
+      // Make the POST request using Axios
+      await axios
+        .post(url, values)
+        .then(function (response) {
+          // Handle success response
+          //confirm1()
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          // Handle error
+          console.log(error);
+        });
+    }
+  };
 
-  const removeEmployee = (empleadosSelected) =>{
+  const removeEmployee = (empleadosSelected) => {
+    setVisibleRemoveEmployee(false);
+    pacthEmployee({
+      fecha_final: convertDate_to_YMD(new Date()),
+      hora_final: getTimeHHMM(),
+      id_boleta: boletaClickAdd_Remove,
+      codigo_empleado: empleadosSelected.codigo_empleado,
+    });
+    const getBoletas = async () => {
+      await axios
+        .get(myURL_ + "/boleta_detail", {
+          params: { presupuesto: id_proyecto_, cerrada: estado },
+        })
+        .then(function (response) {
+          setDetalle_Boletas(response.data);
+        })
+        .catch(function (error) {
+          setDetalle_Boletas([]);
+        });
+    };
 
-    console.log(empleadosSelected)
-    setVisibleRemoveEmployee(false)
+    getBoletas();
+  };
 
-  }
-
-
-  const addEmployee = (empleadosSelected) =>{
-
-    console.log(empleadosSelected)
-    setVisibleAddEmployee(false)
-
-  }
-
-
+  const addEmployee = (empleadosSelected) => {
+    console.log(empleadosSelected);
+    setVisibleAddEmployee(false);
+  };
 
   useEffect(() => {
     const getBoletas = async () => {
@@ -102,8 +163,7 @@ export default function TableBoletas({
           setDetalle_Boletas([]);
         });
     };
-
-    getBoletas(id_proyecto_);
+    getBoletas();
   }, [id_proyecto_, myURL_, estado]);
 
   return (
@@ -148,8 +208,13 @@ export default function TableBoletas({
         style={{ width: "30vw" }}
         onHide={() => setVisibleLista(false)}
       >
-             <TableEmpleadosView empleados={empleados}  buttonOptions={[{visible:false, label:"", action:null} ,
-                                                                                               {visible:true, label:"Entendido", action:setVisibleLista}]}  />
+        <TableEmpleadosView
+          empleados={empleados}
+          buttonOptions={[
+            { visible: false, label: "", action: null },
+            { visible: true, label: "Entendido", action: setVisibleLista },
+          ]}
+        />
       </Dialog>
       <Dialog
         header="Lista de empleados (Disponibles para añadir a la actividad)"
@@ -157,8 +222,13 @@ export default function TableBoletas({
         style={{ width: "30vw" }}
         onHide={() => setVisibleAddEmployee(false)}
       >
-             <TableEmpleadosView empleados={empleados}  buttonOptions={[{visible:true, label:"Añadir", action:addEmployee} ,
-                                                                                               {visible:true, label:"Cancelar", action:setVisibleAddEmployee}]}  />
+        <TableEmpleadosView
+          empleados={empleados}
+          buttonOptions={[
+            { visible: true, label: "Añadir", action: addEmployee },
+            { visible: true, label: "Cancelar", action: setVisibleAddEmployee },
+          ]}
+        />
       </Dialog>
       <Dialog
         header="Lista de empleados para Eliminar de la actividad"
@@ -166,10 +236,18 @@ export default function TableBoletas({
         style={{ width: "30vw" }}
         onHide={() => setVisibleRemoveEmployee(false)}
       >
-             <TableEmpleadosView empleados={empleados} buttonOptions={[{visible:true, label:"Remover", action:removeEmployee} ,
-                                                                                               {visible:true, label:"Cancelar", action:setVisibleRemoveEmployee}]}  />
+        <TableEmpleadosView
+          empleados={empleados}
+          buttonOptions={[
+            { visible: true, label: "Remover", action: removeEmployee },
+            {
+              visible: true,
+              label: "Cancelar",
+              action: setVisibleRemoveEmployee,
+            },
+          ]}
+        />
       </Dialog>
-      
     </div>
   );
 }
