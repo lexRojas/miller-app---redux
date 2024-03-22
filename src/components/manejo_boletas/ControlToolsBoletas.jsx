@@ -7,7 +7,8 @@ export default function ControlToolsBoletas({
   date_inicio,
   date_final,
   setDateInicio,
-  setDateFinal,
+  setDateFinal
+
 }) {
   return (
     <div className="card flex-auto md:flex-wrap gap-3 p-fluid">

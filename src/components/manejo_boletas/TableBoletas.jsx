@@ -16,6 +16,8 @@ export default function TableBoletas({
   setSelectedProducts,
   date_inicio,
   date_final,
+  detalle_boletas,
+  setDetalle_Boletas
 }) {
   // Variables del contexto
 
@@ -24,7 +26,9 @@ export default function TableBoletas({
 
   // Variables de estado interno
 
-  const [detalle_boletas, setDetalle_Boletas] = useState([]);
+
+
+  const [optionsSelectedRow, setoptionsSelectedRow] = useState(null);
   const [visibleLista, setVisibleLista] = useState(false);
   const [visibleAddEmployee, setVisibleAddEmployee] = useState(false);
   const [visibleRemoveEmployee, setVisibleRemoveEmployee] = useState(false);
@@ -42,13 +46,15 @@ export default function TableBoletas({
         <Button
           className="m-1"
           icon="pi pi-plus"
-          severity="success"
+          severity={estado?"secondary":"success" }
+          disabled={estado}
           onClick={(e) => showEmpleadosAdd(options)}
         />
         <Button
           className="m-1"
           icon="pi pi-minus"
-          severity="danger"
+          severity={estado?"secondary":"danger" }
+          disabled={estado}
           onClick={(e) => showEmpleadosRemove(options)}
         />
         <Button
@@ -69,38 +75,75 @@ export default function TableBoletas({
   };
 
   // funciones
+  // METODO PARA PRESENTAR LA PANTALLA DE EMPLEADOS.
 
   const showEmpleados = (options) => {
+    console.log(options)
+
     const { empleados } = options;
+    setoptionsSelectedRow(options);
     setEmpleados(empleados);
     setVisibleLista(true);
   };
+
+  // METODO PARA PRESENTAR LA PANTALLA DE ELIMINAR  EMPLEADOS.
 
   const showEmpleadosRemove = (options) => {
     if (options.empleados.length > 1) {
       const { empleados } = options;
       const { id } = options;
 
+      setoptionsSelectedRow(options);
       setboletaClickAdd_Remove(id);
       setEmpleados(empleados);
       setVisibleRemoveEmployee(true);
     } else {
       toastControl.current.show({
-        severity:"error",
+        severity: "error",
         summary: "Miller CR",
         detail: "No se pueden reducir a menos de una persona una boleta",
-        life:3000
-      })
-
+        life: 3000,
+      });
     }
   };
 
-  const showEmpleadosAdd = (options) => {
-    const { empleados } = options;
+  // METODO PARA PRESENTAR LA PANTALLA DE ADD EMPLEADOS.
 
-    setEmpleados(empleados);
-    setVisibleAddEmployee(true);
+  const showEmpleadosAdd = (options) => {
+    const { id } = options
+    setoptionsSelectedRow(options);
+    setboletaClickAdd_Remove(id);
+
+    const get_empleados = async (presupuesto = 0) => {
+      if (presupuesto) {
+        await axios
+          .get(`${myURL_}/empleados`, { params: { presupuesto } })
+          .then(function (response) {
+            setEmpleados(response.data);
+            setVisibleAddEmployee(true);
+          })
+          .catch(function (error) {
+            let result = [];
+            setEmpleados(result);
+            console.log("Error en Fetch Get elementos");
+            console.log(error);
+
+            toastControl.current.show({
+              severity:'error',
+              summary:'Miller CR',
+              detail:'No hay empleados que añadir',
+              life:3000
+            })
+          });
+      }
+    };
+
+    get_empleados(id_proyecto_);
+
+    
   };
+
+  // PROCESOS PARA SACAR EMPLEADOS (PATCH) DE LAS BOLETAS DE ASIGNACION
 
   const pacthEmployee = async (values) => {
     if (values) {
@@ -108,45 +151,104 @@ export default function TableBoletas({
       const url = myURL_ + "/cerrar";
       // Make the POST request using Axios
       await axios
-        .post(url, values)
+        .patch(url, values)
         .then(function (response) {
           // Handle success response
           //confirm1()
-          console.log(response.data);
+          let { resultado } = response.data;
+          return resultado;
         })
         .catch(function (error) {
           // Handle error
           console.log(error);
+          return false;
         });
     }
   };
 
   const removeEmployee = (empleadosSelected) => {
-    setVisibleRemoveEmployee(false);
-    pacthEmployee({
+    let resultado = pacthEmployee({
       fecha_final: convertDate_to_YMD(new Date()),
       hora_final: getTimeHHMM(),
       id_boleta: boletaClickAdd_Remove,
       codigo_empleado: empleadosSelected.codigo_empleado,
     });
-    const getBoletas = async () => {
-      await axios
-        .get(myURL_ + "/boleta_detail", {
-          params: { presupuesto: id_proyecto_, cerrada: estado },
-        })
-        .then(function (response) {
-          setDetalle_Boletas(response.data);
-        })
-        .catch(function (error) {
-          setDetalle_Boletas([]);
-        });
-    };
 
-    getBoletas();
+    if (resultado) {
+      const detalle_boletas_copia = JSON.parse(JSON.stringify(detalle_boletas));
+
+      let index = -1;
+      let i = -1;
+
+      detalle_boletas_copia.filter((row) => {
+        i++;
+        if (row.id === boletaClickAdd_Remove) {
+          index = i;
+        }
+        return true;
+      });
+
+      detalle_boletas_copia[index].empleados = detalle_boletas_copia[
+        index
+      ].empleados.filter((row) => {
+        return row.codigo_empleado !== empleadosSelected.codigo_empleado;
+      });
+
+      setDetalle_Boletas(detalle_boletas_copia);
+    }
+
+    setVisibleRemoveEmployee(false);
   };
 
-  const addEmployee = (empleadosSelected) => {
-    console.log(empleadosSelected);
+  // PROCESOS PARA AÑADIR EMPLEADOS ..
+
+  const add_empleados = async (values) => {
+    if (values) {
+      await axios
+        .post(`${myURL_}/addEmpleado`, values)
+        .then(function (response) {
+          let { resultado } = response.data;
+          return resultado;
+        })
+        .catch(function (error) {
+          console.log("Error en Fetch Get elementos");
+          console.log(error);
+          return false;
+        });
+    }
+  };
+
+   const addEmployee = (empleadosSelected) => {
+
+    const valores = {
+      id_boleta: boletaClickAdd_Remove,
+      codigo_empleado: empleadosSelected.codigo_empleado,
+      fecha_inicio: convertDate_to_YMD(new Date()),
+      hora_inicio: getTimeHHMM(),
+    };
+
+    let resultado = add_empleados(valores);
+
+    if (resultado) {
+      const detalle_boletas_copia = JSON.parse(JSON.stringify(detalle_boletas));
+
+      let index = -1;
+      let i = -1;
+
+      detalle_boletas_copia.filter((row) => {
+        i++;
+        if (row.id === boletaClickAdd_Remove) {
+          index = i;
+        }
+        return true;
+      });
+
+      const empleados = detalle_boletas_copia[index].empleados
+      empleados.push(empleadosSelected)
+
+      setDetalle_Boletas(detalle_boletas_copia);
+    }
+
     setVisibleAddEmployee(false);
   };
 
@@ -164,7 +266,7 @@ export default function TableBoletas({
         });
     };
     getBoletas();
-  }, [id_proyecto_, myURL_, estado]);
+  }, [id_proyecto_, myURL_, estado, setDetalle_Boletas]);
 
   return (
     <div className="card">
@@ -214,6 +316,7 @@ export default function TableBoletas({
             { visible: false, label: "", action: null },
             { visible: true, label: "Entendido", action: setVisibleLista },
           ]}
+          optionsSelectedRow={optionsSelectedRow}
         />
       </Dialog>
       <Dialog
@@ -228,6 +331,7 @@ export default function TableBoletas({
             { visible: true, label: "Añadir", action: addEmployee },
             { visible: true, label: "Cancelar", action: setVisibleAddEmployee },
           ]}
+          optionsSelectedRow={optionsSelectedRow}
         />
       </Dialog>
       <Dialog
@@ -246,6 +350,7 @@ export default function TableBoletas({
               action: setVisibleRemoveEmployee,
             },
           ]}
+          optionsSelectedRow={optionsSelectedRow}
         />
       </Dialog>
     </div>

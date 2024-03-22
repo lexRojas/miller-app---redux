@@ -6,8 +6,8 @@ const procesarInitialState = () => {
     id_proyecto: "",
     desc_proyecto: "",
     usuario: "",
-    myURL: "https://psql-backend-a5691387ba13.herokuapp.com",
-    //myURL: 'http://localhost:8080',
+    //myURL: "https://psql-backend-a5691387ba13.herokuapp.com",
+    myURL: 'http://localhost:8080',
     id_sector: "",
     actividad: [],
 

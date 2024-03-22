@@ -9,6 +9,7 @@ function DetalleBoletas() {
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [date_inicio, setDateInicio] = useState(new Date());
   const [date_final, setDateFinal] = useState(new Date());
+  const [detalle_boletas, setDetalle_Boletas] = useState([]);
 
   return (
     <div className="card flex flex-column col-12 p-3 md:col-10 mt-2">
@@ -34,10 +35,17 @@ function DetalleBoletas() {
           setSelectedProducts={setSelectedProducts}
           date_inicio={date_inicio}
           date_final={date_final}
+          detalle_boletas = {detalle_boletas} 
+          setDetalle_Boletas = {setDetalle_Boletas}
         />
       </div>
       <div>
-        <ActionBoletas selectedProducts={selectedProducts} />
+        <ActionBoletas 
+          selectedProducts={selectedProducts} 
+          estado={estado} 
+          detalle_boletas = {detalle_boletas} 
+          setDetalle_Boletas = {setDetalle_Boletas}
+        />
       </div>
     </div>
   );
