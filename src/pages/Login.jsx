@@ -29,7 +29,7 @@ export default function Login() {
     <div className="col-12 md:col-5 card">
       <div className="col  ">
         <p className="text-center text-xl font-bold ">
-          Sistema de Control de Horas
+          Sistema de Control de Horas Version 1.5
         </p>
       </div>
 
