@@ -6,17 +6,23 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
+import { Dialog } from "primereact/dialog";
+import { InputText } from "primereact/inputtext";
 
 import axios from "axios";
 
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Boleta from "../pages/Boleta";
 
 function TableEmpleados() {
   const [datosEmpleadosDisponibles, setDatosEmpleadosDisponibles] = useState(
     []
   );
   const [datosEmpleadosAsignados, setDatosEmpleadosAsignados] = useState([]);
+
+  const [visible, setVisible] = useState(false);
+  const [visible2, setVisible2] = useState(false);
 
   let selectedEmpleadoDisponible = null;
   let selectedEmpleadoAsignado = null;
@@ -50,7 +56,7 @@ function TableEmpleados() {
   const confirm1 = () => {
     confirmDialog({
       message: messageContent,
-        //"Boleta asignada con exito! ¿Desea ir a ver las boletas asignadas? ",
+      //"Boleta asignada con exito! ¿Desea ir a ver las boletas asignadas? ",
       header: "Confirmation",
       icon: "pi pi-thumbs-up",
       defaultFocus: "accept",
@@ -61,20 +67,22 @@ function TableEmpleados() {
 
   const messageContent = (
     <div>
-      <p className="font-bold text-m text-primary"> <strong>Se ha incluido su boleta de asignacion. </strong> </p>
-      <p className="  text-s text-secundary">¿Desea ir a ver las boleta asignadas?</p>
+      <p className="font-bold text-m text-primary">
+        {" "}
+        <strong>Se ha incluido su boleta de asignacion. </strong>{" "}
+      </p>
+      <p className="  text-s text-secundary">
+        ¿Desea ir a ver las boleta asignadas?
+      </p>
     </div>
   );
 
-
   const accept = () => {
-     navegate('/DetalleBoletas')      
-  }
+    navegate("/DetalleBoletas");
+  };
   const reject = () => {
     window.location.reload();
-  }
-
-
+  };
 
   const toastRef = useRef(null);
   const navegate = useNavigate();
@@ -241,7 +249,10 @@ function TableEmpleados() {
         .post(url, postData)
         .then(function (response) {
           // Handle success response
-            confirm1()
+          setVisible(true);
+          confirm1();
+          console.log(postData)
+
         })
         .catch(function (error) {
           // Handle error
@@ -259,6 +270,19 @@ function TableEmpleados() {
   const handledClckCancelar = () => {
     navegate("/app");
   };
+
+
+  const sendEmail=()=>{
+    
+    toastRef.current.show({
+      severity: "success",
+      summary: "Miller CR",
+      detail: 'Correo enviado!!',
+      life: 3000,
+    });
+
+    setVisible2(true)
+  }
 
   return (
     <div className="flex flex-column col-12 md:flex-row">
@@ -362,6 +386,46 @@ function TableEmpleados() {
       </div>
       <Toast ref={toastRef} />
       <ConfirmDialog />
+
+      <Dialog
+        header="Envio de Boleta por correo"
+        visible={visible}
+        style={{ width: "50vw" }}
+        onHide={() => {
+          if (!visible) return;
+          setVisible(false);
+        }}
+      >
+        <div className="flex flex-column gap-2">
+          <label htmlFor="email">Correo Electrónico</label>
+          <InputText id="email" aria-describedby="correo-help" />
+          <small id="correo-help">
+            Digite el correo electrónico de la persona a la que desea se envié
+            la boleta.
+          </small>
+          <div className="flex flex-wrap justify-content-center gap-3">
+            <Button label="Enviar" 
+            
+            onClick={sendEmail}
+            />
+          </div>
+        </div>
+      </Dialog>
+
+      <Dialog
+        header="Envio de Boleta por correo"
+        visible={visible2}
+        style={{ width: "50vw" }}
+        onHide={() => {
+          if (!visible) return;
+          setVisible(false);
+        }}
+      >
+        <Boleta/>
+      </Dialog>
+
+
+
     </div>
   );
 }

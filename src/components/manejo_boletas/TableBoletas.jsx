@@ -89,7 +89,7 @@ export default function TableBoletas({
   // METODO PARA PRESENTAR LA PANTALLA DE ELIMINAR  EMPLEADOS.
 
   const showEmpleadosRemove = (options) => {
-    if (options.empleados.length > 1) {
+    if (options.empleados.length > 0) {
       const { empleados } = options;
       const { id } = options;
 
@@ -101,7 +101,7 @@ export default function TableBoletas({
       toastControl.current.show({
         severity: "error",
         summary: "Miller CR",
-        detail: "No se pueden reducir a menos de una persona una boleta",
+        detail: "No existen empleados que eliminar.",
         life: 3000,
       });
     }

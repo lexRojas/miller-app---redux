@@ -1,0 +1,28 @@
+
+
+.cuerpo_boleta {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.item-texto{
+    flex-shrink: 1;
+    flex-grow: 1;
+    flex-basis: 10rem;
+    background-color: bisque;
+    padding: 5px;
+
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 1.1rem;    
+
+
+}
+
+
+.item-texto .label {
+
+    font-weight: 600;
+
+}
