@@ -249,7 +249,7 @@ function TableEmpleados() {
         .post(url, postData)
         .then(function (response) {
           // Handle success response
-          setVisible(true);
+          //setVisible(true);
           confirm1();
           console.log(postData)
 
@@ -417,8 +417,8 @@ function TableEmpleados() {
         visible={visible2}
         style={{ width: "50vw" }}
         onHide={() => {
-          if (!visible) return;
-          setVisible(false);
+          if (!visible2) return;
+          setVisible2(false);
         }}
       >
         <Boleta/>
