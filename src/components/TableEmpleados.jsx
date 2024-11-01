@@ -35,6 +35,10 @@ function TableEmpleados() {
     selectedEmpleadoAsignado = o;
   };
 
+  const user = useSelector((state) => state.user);
+  const [data, setData ] =useState([]) 
+
+
   const baseURL = useSelector((state) => state.user.myURL);
   const id_proyecto_ = useSelector((state) => state.user.id_proyecto);
 
@@ -199,6 +203,9 @@ function TableEmpleados() {
       empleados_asignados: datosEmpleadosAsignados,
     };
 
+    setData(postData)
+
+
     let validacion = true;
 
     if ((hora_inicio_ === ":") | (hora_inicio_ === "")) {
@@ -249,7 +256,7 @@ function TableEmpleados() {
         .post(url, postData)
         .then(function (response) {
           // Handle success response
-          //setVisible(true);
+          setVisible(true);
           confirm1();
           console.log(postData)
 
@@ -421,7 +428,7 @@ function TableEmpleados() {
           setVisible2(false);
         }}
       >
-        <Boleta/>
+        <Boleta user = {user} boleta= {data}/>
       </Dialog>
 
 
