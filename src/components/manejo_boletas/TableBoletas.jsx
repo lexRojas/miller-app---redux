@@ -225,11 +225,13 @@ const [data, setData] = useState([])
   // PROCESOS PARA AÑADIR EMPLEADOS ..
 
   const add_empleados = async (values) => {
+    console.log(values)
     if (values) {
       await axios
         .post(`${myURL_}/addEmpleado`, values)
         .then(function (response) {
           let { resultado } = response.data;
+          console.log(resultado)
           return resultado;
         })
         .catch(function (error) {
