@@ -66,11 +66,7 @@ const [data, setData] = useState([])
           disabled={estado}
           onClick={(e) => showEmpleadosRemove(options)}
         />
-        <Button
-          className="m-1"
-          icon="pi pi-eye"
-          onClick={(e) => showEmpleados(options)}
-        />
+
         <Button
           className="m-1"
           style={{background:'green'}}
@@ -330,21 +326,7 @@ const [data, setData] = useState([])
         ></Column>
       </DataTable>
       <Toast ref={toastControl} />
-      <Dialog
-        header="Lista de empleados asignados en esta boleta"
-        visible={visibleLista}
-        style={{ width: "30vw" }}
-        onHide={() => setVisibleLista(false)}
-      >
-        <TableEmpleadosView
-          empleados={empleados}
-          buttonOptions={[
-            { visible: false, label: "", action: null },
-            { visible: true, label: "Entendido", action: setVisibleLista },
-          ]}
-          optionsSelectedRow={optionsSelectedRow}
-        />
-      </Dialog>
+
       <Dialog
         header="Lista de empleados (Disponibles para añadir a la actividad)"
         visible={visibleAddEmployee}
