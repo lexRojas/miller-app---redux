@@ -10,6 +10,9 @@ import TableEmpleadosView from "./TableEmpleadosView";
 import { convertDate_to_YMD } from "../../tools/convertDate";
 import { getTimeHHMM } from "../../tools/getTimeHHMM";
 
+import Boleta from '../../pages/Boleta'
+
+
 export default function TableBoletas({
   estado,
   selectedProducts,
@@ -23,6 +26,7 @@ export default function TableBoletas({
 
   const id_proyecto_ = useSelector((state) => state.user.id_proyecto);
   const myURL_ = useSelector((state) => state.user.myURL);
+  const user = useSelector((state) => state.user);
 
   // Variables de estado interno
 
@@ -36,6 +40,11 @@ export default function TableBoletas({
   const [boletaClickAdd_Remove, setboletaClickAdd_Remove] = useState(null);
 
   const [empleados, setEmpleados] = useState([]);
+
+const [visible, setVisible] = useState(false)
+const [data, setData] = useState([])
+
+
   const toastControl = useRef(null);
 
   // Componentes internos
@@ -62,6 +71,12 @@ export default function TableBoletas({
           icon="pi pi-eye"
           onClick={(e) => showEmpleados(options)}
         />
+        <Button
+          className="m-1"
+          style={{background:'green'}}
+          icon="pi pi-whatsapp"
+          onClick={(e) => showBoleta(options)}
+        />
       </div>
     );
   };
@@ -78,13 +93,21 @@ export default function TableBoletas({
   // METODO PARA PRESENTAR LA PANTALLA DE EMPLEADOS.
 
   const showEmpleados = (options) => {
-    console.log(options)
 
     const { empleados } = options;
     setoptionsSelectedRow(options);
     setEmpleados(empleados);
     setVisibleLista(true);
   };
+
+  const showBoleta = (options) =>{
+    setVisible(true)
+
+    options.empleados_asignados = options.empleados
+    
+
+    setData(options)
+  }
 
   // METODO PARA PRESENTAR LA PANTALLA DE ELIMINAR  EMPLEADOS.
 
@@ -137,6 +160,9 @@ export default function TableBoletas({
           });
       }
     };
+
+
+
 
     get_empleados(id_proyecto_);
 
@@ -352,6 +378,17 @@ export default function TableBoletas({
           ]}
           optionsSelectedRow={optionsSelectedRow}
         />
+      </Dialog>
+      <Dialog
+        header="Envio de Boleta por correo"
+        visible={visible}
+        style={{ width: 'clamp(50rem, 50rem, 100%)' }}
+        onHide={() => {
+          if (!visible) return;
+          setVisible(false);
+        }}
+      >
+        <Boleta user = {user} boleta= {data}/>
       </Dialog>
     </div>
   );

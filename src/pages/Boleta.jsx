@@ -7,9 +7,7 @@ const Boleta = (props) => {
   console.log(boleta)
 
 
-  const enviar = () => {
- 
-  }
+
 
   return (<div>
         <div >
@@ -65,14 +63,8 @@ const Boleta = (props) => {
 
                 </table>
 
-
-
-
         </div>
-        <hr />
-        <div className="cuerpo_boleta">
-            <button onClick={enviar}> Enviar </button>
-        </div>        
+      
 
     
     

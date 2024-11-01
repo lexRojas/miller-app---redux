@@ -422,7 +422,7 @@ function TableEmpleados() {
       <Dialog
         header="Envio de Boleta por correo"
         visible={visible2}
-        style={{ width: "50vw" }}
+        style={{ width: 'clamp(50rem, 50rem, 100%)' }}
         onHide={() => {
           if (!visible2) return;
           setVisible2(false);

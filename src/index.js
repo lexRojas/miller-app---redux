@@ -11,7 +11,7 @@ root.render(
   <React.StrictMode>
     <div className="flex ">
       <Provider store = {store}>
-        <App/>
+         <App/>
       </Provider>
     </div>
   </React.StrictMode>
