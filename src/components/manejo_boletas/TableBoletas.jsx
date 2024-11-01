@@ -33,7 +33,7 @@ export default function TableBoletas({
 
 
   const [optionsSelectedRow, setoptionsSelectedRow] = useState(null);
-  const [visibleLista, setVisibleLista] = useState(false);
+  // const [visibleLista, setVisibleLista] = useState(false);
   const [visibleAddEmployee, setVisibleAddEmployee] = useState(false);
   const [visibleRemoveEmployee, setVisibleRemoveEmployee] = useState(false);
 
@@ -88,13 +88,7 @@ const [data, setData] = useState([])
   // funciones
   // METODO PARA PRESENTAR LA PANTALLA DE EMPLEADOS.
 
-  const showEmpleados = (options) => {
 
-    const { empleados } = options;
-    setoptionsSelectedRow(options);
-    setEmpleados(empleados);
-    setVisibleLista(true);
-  };
 
   const showBoleta = (options) =>{
     setVisible(true)

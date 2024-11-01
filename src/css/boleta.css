@@ -80,3 +80,19 @@ table.blueTable {
     border-radius: 5px;
   }
 
+.panel{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10rem;
+}
+
+.panel button{
+  background-color: #2A85D1;
+  border: transparent;
+  padding: 5px;
+  color:white;
+  font-weight: 600;
+  border-radius: 5px;
+  width: 10rem;
+}
