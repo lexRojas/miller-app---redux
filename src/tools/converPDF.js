@@ -17,7 +17,7 @@ export const converPDF = (component) => {
 
     //   pdf.addImage(imgData, "PNG", xOffset, yOffset, imgWidth, imgHeight);  
       pdf.addImage(imgData, "PNG", xOffset, yOffset);  
-      pdf.save("millcerboleta.pdf");
+      pdf.save("boleta.pdf");
     });
   };
   

@@ -28,6 +28,7 @@ import { getTimeHHMM } from "../tools/getTimeHHMM"
 
 function FormBoleta() {
   const [isValid, setIsValid] = useState(true);
+  
 
   const actividad_ = useSelector( (state) => state.user.actividad);
   const id_proyecto_ = useSelector((state) => state.user.id_proyecto);
