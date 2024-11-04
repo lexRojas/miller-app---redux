@@ -51,6 +51,7 @@ export const fijarDatos = (id,data, key) => {
 
     // Crear un almacén de objetos si aún no existe
     if (!db.objectStoreNames.contains("miObjectStore")) {
+      // eslint-disable-next-line no-unused-vars
       const objectStore = db.createObjectStore("miObjectStore", {
         keyPath: "id",
         autoIncrement: true,
@@ -125,6 +126,7 @@ export const obtenerDatos = (id) => {
 
       // Crear un almacén de objetos si aún no existe
       if (!db.objectStoreNames.contains("miObjectStore")) {
+        // eslint-disable-next-line no-unused-vars
         const objectStore = db.createObjectStore("miObjectStore", {
           keyPath: "id",
           autoIncrement: true,
