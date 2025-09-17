@@ -1,16 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-
 const procesarInitialState = () => {
   const state = {
     id_proyecto: "",
     desc_proyecto: "",
     usuario: "",
-    myURL: "https://psql-backend-a5691387ba13.herokuapp.com",
+    myURL: "https://millerdb-854b783d8394.herokuapp.com",
     //myURL: 'http://localhost:8080',
     id_sector: "",
     actividad: [],
-
   };
 
   return state;
@@ -36,7 +34,6 @@ export const userSlice = createSlice({
     SET_ACTIVIDAD: (state, action) => {
       state.actividad = action.payload;
     },
-
   },
 });
 
@@ -47,6 +44,3 @@ export const {
   setIdUser,
   SET_ACTIVIDAD,
 } = userSlice.actions;
-
-
-
